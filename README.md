@@ -1,10 +1,12 @@
-Analysis of Drain Flows in the Lower Boise River Basin
+##Analysis of Drain Flows in the Lower Boise River Basin
 Modified code from Bridget Bittmann (2023)
 
-Summary
+##Summary
+
 The goals of the scripts in this repository are to 1) quantify changes in annual flow volumes from 1987 to 2020 for the 15 main drains in the Lower Boise River Basin and 2) understand the impacts of urbanization, climate, and canal flows on the drain flows through time.
 
-Steps to running drain analysis:
+##Steps to running drain analysis:
+
 Python scripts are data preprocessing while R scripts are mainly modeling and figure outputs. You will need to run the dataretrieval.R script to get data for flow values before running the drain_flows.ipynb script.
 
 Python
