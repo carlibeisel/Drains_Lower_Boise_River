@@ -17,6 +17,7 @@ Python
 3. Compile_data.ipynb: Merges flow, climate, and land use annual stats together *** cannot use direct output from this in R. It merges Mason Creek and Mason Drain wrong. This was manually corrected.
 
 R
+
 4. dataretrieval.R: This gets all the USGS flow data for the drains. You will need to do this before you sum the flows in the first Python script.
 
 5. drain_preprocessing.R: This script standardizes predictor variables, add canal flow values for each drain each year, and does Mann Kendall tests. It also checks for correlations between variables. The output from here can go into the mixed_model_borah script.
