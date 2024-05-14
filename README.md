@@ -10,24 +10,21 @@ Steps to running drain analysis:
 
 Python scripts are data preprocessing while R scripts are mainly modeling and figure outputs. You will need to run the dataretrieval.R script to get data for flow values before running the drain_flows.ipynb script.
 
-Python
-1. drain_flows.ipynb: Sums irrigation season flows based on start and end dates from diversion analysis
+* 01_dataretrieval.R: This gets all the USGS flow data for the drains. You will need to do this before you sum the flows in the first Python script.
+  
+* 02_drain_flows.ipynb: Sums irrigation season flows based on start and end dates from diversion analysis
 
-2. The following 2 scripts can be run in any order:
-* climate_data_extract.ipynb: Calculates annual zonal stats for each drain watershed from Daymet and SSEBop
-* landcover_calculations.ipynb: Calculates annual percent for each land use from LCMAP data.
+* 03_climate_data_extract.ipynb: Calculates annual zonal stats for each drain watershed from Daymet and SSEBop
+  
+* 04_landcover_calculations.ipynb: Calculates annual percent for each land use from LCMAP data.
 
-3. Compile_data.ipynb: Merges flow, climate, and land use annual stats together *** cannot use direct output from this in R. It merges Mason Creek and Mason Drain wrong. This was manually corrected.
+* 05_compile_data.ipynb: Merges flow, climate, and land use annual stats together *** cannot use direct output from this in R. It merges Mason Creek and Mason Drain wrong. This was manually corrected.
 
-R
+* 06_drain_preprocessing.R: This script standardizes predictor variables, add canal flow values for each drain each year, and does Mann Kendall tests. It also checks for correlations between variables. The output from here can go into the mixed_model_borah script.
 
-4. dataretrieval.R: This gets all the USGS flow data for the drains. You will need to do this before you sum the flows in the first Python script.
+* 07_mixed_model_borah.R: This runs the Generalized Linear Mixed Effects Model.
 
-5. drain_preprocessing.R: This script standardizes predictor variables, add canal flow values for each drain each year, and does Mann Kendall tests. It also checks for correlations between variables. The output from here can go into the mixed_model_borah script.
-
-6. mixed_model_borah.R: This runs the Generalized Linear Mixed Effects Model.
-
-7. figures.R: Creates figures from GLMM
+* 08_figures.R: Creates figures from GLMM
 
 Contact Information
 For questions or comments regarding this analysis, please email Bridget Bittmann at bridgetbittmann@u.boisestate.edu.
