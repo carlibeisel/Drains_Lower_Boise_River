@@ -2,7 +2,9 @@
 ## RETRIEVE USGS DATA ##
 ## ------------------ ##
 
-#Modified: May 22, 2024
+# By Carli Beisel
+# Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
+# Date adapted: May 22, 2024
 # Adapted from Bridget Bittmann (2023; github: bridgetmarie24)
 
 
