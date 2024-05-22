@@ -1,7 +1,12 @@
 ## ------------------ ##
 ## DRAIN PROCESSING 
 ## ------------------ ##
-# By Bridget Bittmann
+
+# By Carli Beisel
+# Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
+# Date adapted: May 22, 2024
+# Adapted from Bridget Bittmann (2023; github: bridgetmarie24)
+
 
 # This script standardizes predictor variables, add canal flow values for each 
 # drain each year, and does Mann Kendall tests. It also checks for correlations 
@@ -22,26 +27,27 @@ library(tibble)
 library(ggrepel)
 library(flexmix)
 library(modelr)
-#install.packages('magrittr')
+install.packages('magrittr')
 library(magrittr)
 library(dbplyr) #added 
-#install.packages('paletteer')
+install.packages('paletteer')
 library(paletteer)
-#install.packages('ggpubr')
+install.packages('ggpubr')
 library(ggpubr)
-#install.packages('Kendall')
+install.packages('Kendall')
 library(Kendall)
 source("http://peterhaschke.com/Code/multiplot.R") 
+
 ## INPUT THE DATA ##
 ## -------------- ##
-data <- read.csv('~/Desktop/DATA/Bridget/Rdata/model_input.csv')
+data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input.csv')
 na_data <- data[is.na(data)] # Check for NA data in the file
 data <- data[-c(1)] # Remove python index value column
 
 ## DATA DISTRIBUTIONS ## 
 ## ------------------ ##
 
-pdf(file='~/Desktop/DATA/Bridget/Figures/acreft_hist.pdf',
+pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/acreft_hist.pdf',
     width=6,
     height=4)
 ggplot(data=data)+
@@ -52,7 +58,7 @@ ggplot(data=data)+
   theme_bw()
 dev.off()
 
-pdf(file='~/Desktop/DATA/Bridget/Figures/SD_AF_hist.pdf',
+pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/SD_AF_hist.pdf',
     width=6,
     height=4)
 ggplot(data=data)+
@@ -114,7 +120,7 @@ paletteer_d("colorBlindness::Blue2DarkOrange12Steps")
 
 pal <- paletteer_d("colorBlindness::paletteMartin")
 
-pdf(file='~/Desktop/DATA/Bridget/Figures/regress.pdf',
+pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/regress.pdf',
     width=8,
     height=5)
 ggplot(data = data) +
@@ -197,7 +203,7 @@ ggplot(data = data) +
   xlab('Year') + 
   ylab('Discharge (AF)') +
   coord_cartesian(ylim =c(0, 120000))
-ggsave('~/Desktop/DATA/Bridget/Figures/AF_v_time.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/AF_v_time.jpg', 
        width = 6,
        height = 4,
        units = 'in')
@@ -213,7 +219,7 @@ sub_names<- data.frame(sub_names)
 
 displaydat <- filter(data, Name %in% sub_names$sub_names)
 
-pdf(file='~/Desktop/DATA/Bridget/Figures/regress-zoom.pdf',
+pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/regress-zoom.pdf',
     width=5,
     height=3)
 ggplot(data = displaydat) +
@@ -240,7 +246,7 @@ ggplot(data = displaydat) +
 dev.off()
 
 # Scale all the variables for model input
-
+#here
 scale2sd <- function(x){
   (x - mean(x))/(sd(x)*2)
 }
@@ -272,16 +278,20 @@ sd(data$scale_irrig_temp)
 mean(data$scale_et)
 sd(data$scale_et)
 
+
 ## Add canal discharge as a predictor variable and standardize ####
 
-relates <- read.csv('~/Desktop/DATA/Bridget/Rdata/SpatialJoin_Drain.csv')
-divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Rdata/model_input.csv')
-spatial_dict <- read.csv('~/Desktop/DATA/Bridget/Rdata/name_dictionary_spatial.csv')
-spatial_dict_drain <- read.csv('~/Desktop/DATA/Bridget/DrainRelates.csv')
+relates <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/SpatialJoin_Drain.csv')
+
+#confused . . . 
+divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input.csv') 
+
+spatial_dict <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/name_dictionary_spatial.csv')
+spatial_dict_drain <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/DrainRelates.csv')
 spatial_dict_drain <- subset(spatial_dict_drain, select = -c(Dataset, SiteID))
 spatial_dict_drain <- na.omit(spatial_dict_drain)
 relates <- dplyr::left_join(relates, spatial_dict, by =('WaterRight' = 'WaterRight') )
-#doesn't like divflows . . .isnt showing up??
+
 years <- data.frame(divflows$Year, divflows$Acre_feet, divflows$Name)
 years <- dplyr::left_join(years, relates, by = c('divflows.Name' = 'NewName'))
 years <- subset(years, select = -c(WaterRight))
