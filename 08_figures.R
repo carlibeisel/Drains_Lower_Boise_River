@@ -2,7 +2,9 @@
 #Creates figures from GLMM
 ## ------------------ ##
 
-# By Bridget Bittmann
+# By Carli Beisel
+# Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
+# Date adapted: May 22, 2024
 
 ## Figures for drain discharge models ##
 
@@ -25,8 +27,8 @@ unscale <- function(x, orig){
 }  
 
 ## Import data ####
-rf <- read.csv('~/Desktop/CASCWork/Rdata/mixed_model_input_041423.csv')  
-arma_ng <- readRDS('~/Desktop/CASCWork/borah-out/arma_nogroup_041423.Rdata')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input.csv')  
+arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
 
 # Check out model summary 
 
@@ -50,7 +52,7 @@ pp <- pp_check(arma_ng, ndraws = 20) +
   ylab('Density') +
   xlab('log(Discharge)')
 
-ggsave('~/Desktop/CASCWork/Figures/ppcheck_041723.png', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ppcheck.png', 
        plot = pp,
        width = 5,
        height = 4)
@@ -88,7 +90,7 @@ urban <- ggplot(data=epreddraws,
   theme(text = element_text(size = 12)) +
   scale_y_continuous(labels = scales::comma)
 urban
-ggsave('~/Desktop/CASCWork/Figures/urb_marg_0417.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/urb_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -131,7 +133,7 @@ et <- ggplot(data=epreddraws,
   scale_y_continuous(labels = scales::comma) +
   coord_cartesian(ylim = c(1000, 40000))
 et
-ggsave('~/Desktop/CASCWork/Figures/et_marg_0417.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/et_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -180,7 +182,7 @@ temp <- ggplot(data=epreddraws,
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(1000, 40000))
 temp
-ggsave('~/Desktop/CASCWork/Figures/tmp_marg_0426.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/tmp_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -213,7 +215,7 @@ ggplot(posterior, aes(x = b_scale_irrig_prcp,
   theme_bw() +
   theme(text = element_text(size = 18)) +
   geom_vline(xintercept = median(posterior$b_scale_irrig_prcp), linetype = 'dotted')
-ggsave('~/Desktop/CASCWork/Figures/prcp_postmass_0127.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -230,7 +232,7 @@ simdata = rf %>%
             et = mean(et),
             scale_DivFlow = mean(scale_DivFlow))
 simdata$Name <- NA
-
+#lt.auto_noyear variable in mixed_model.R in zz_archive
 epreddraws <-  add_epred_draws(lt.auto_noyear, 
                                newdata=simdata,
                                ndraws=1000,
@@ -247,7 +249,7 @@ ggplot(data=epreddraws,
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Total Precip. (in)")  +
   theme_bw() +
   theme(text = element_text(size = 18))
-ggsave('~/Desktop/CASCWork/Figures/prcp_marg.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -282,7 +284,7 @@ canal <- ggplot(data=epreddraws,
   scale_y_continuous(labels = scales::comma) +
   scale_x_continuous(labels = scales::comma)
 canal
-ggsave('~/Desktop/CASCWork/Figures/canal_marg_0426.svg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/canal_marg.svg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -303,7 +305,7 @@ new = rf %>%
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow))
-
+#lt.auto_noyear file from above
 epreddraws <-  add_epred_draws(lt.auto_noyear, 
                                newdata=new,
                                ndraws=1000,
@@ -349,17 +351,18 @@ ggplot(data=epreddraws,
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("Percent Urban") +
   theme_bw() +
   theme(text = element_text(size = 18)) 
-ggsave('~/Desktop/CASCWork/Figures/all_urb_marg.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/all_urb_marg.jpg', 
        width = 6,
        height = 4,
        units = 'in')
 
 ## MCMC plots ##
-
+#here 
+print(colnames(arma_ng))
 # Climate
 mcmc_plot(arma_ng,
           type = 'areas',
-          variable = c('b_et',
+          variable = c('b_scale_et',
                        'b_scale_irrig_prcp',
                        'b_scale_irrig_temp'),
           prob = 0.95) +
@@ -370,7 +373,7 @@ mcmc_plot(arma_ng,
                               'Temperature')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
-ggsave('~/Desktop/CASCWork/Figures/postmass_climate_0213.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_climate.jpg', 
        width = 6,
        height = 4,
        units = 'in')
@@ -394,7 +397,7 @@ mcmc_plot(arma_ng,
                               'Canal Flows')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
-ggsave('~/Desktop/CASCWork/Figures/postmass_all_0417.png', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
        width = 7,
        height = 6,
        units = 'in')
@@ -421,7 +424,7 @@ mcmc_plot(arma_ng,
   scale_y_discrete(labels = c('Urban Proportion')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
-ggsave('~/Desktop/CASCWork/Figures/postmass_urb_0213.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_urb.jpg', 
        width = 6,
        height = 4,
        units = 'in')
@@ -436,14 +439,14 @@ mcmc_plot(arma_ng,
   scale_y_discrete(labels = c('Canal Flows')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
-ggsave('~/Desktop/CASCWork/Figures/postmass_canal_0213.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_canal.jpg', 
        width = 6,
        height = 4,
        units = 'in')
 
 # ET and temp marg effects combined
 et_temp <- ggarrange(et, temp, ncol=2, labels = c('A', 'B'))
-ggsave('~/Desktop/CASCWork/Figures/et_temp_marg_0417.svg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/et_temp_marg.svg', 
        plot = et_temp,
        width = 8,
        height = 4,
@@ -452,7 +455,7 @@ ggsave('~/Desktop/CASCWork/Figures/et_temp_marg_0417.svg',
 ## Marginal effects in on plot
 
 ggarrange(urban, et, temp,canal, ncol=2, nrow = 2, labels = c('A', 'B', 'C', 'D'))
-ggsave('~/Desktop/CASCWork/Figures/combined_marg.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
        units = 'in')
