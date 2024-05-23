@@ -35,7 +35,7 @@ rawdailydata$DiversionName <- 'East Hartley Gulch'
 # Export csv file
 write.csv(file="/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/data_input/dataretrieval/easthartley.csv", rawdailydata)
 
-#Input gauge site numbera and the parameter ID for discharge
+#Input gauge site number and the parameter ID for discharge
 siteNumber <- "13212890"
 info <- readNWISsite(siteNumber)
 parameterCd <- "00060"
