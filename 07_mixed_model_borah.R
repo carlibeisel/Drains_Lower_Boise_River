@@ -2,9 +2,10 @@
 # Mixed Effects Model for Drains #
 ## ------------------ ##
 
-# By Bridget Bittmann
+# By Carli Beisel
+# Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
 # Date created: 01/11/23
-# Date modified: 
+# Date adapted: May 22, 2024
 
 # Import packages:
 install.packages('brms')
@@ -23,15 +24,10 @@ install.packages('flexmix')
 library(flexmix)
 library(modelr)
 library(loo)
-install.packages('here')
-library(here)
-
-# Set directory to current location
-here::here()
 
 # Import the data 
 
-rf <- read.csv('~/Desktop/DATA/Bridget/Rdata/mixed_model_input_041423.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input.csv')
 rf$lt <- log(rf$Sum_AF)
 
 ## MODEL FIT ####
@@ -85,8 +81,8 @@ rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_class1_urban 
  print('MAE')
  mae(rf.mix.new, rf$Sum_AF)
 # 
- saveRDS(rf.mix.new, file = '~/Users/dbeisel/Desktop/DATA/Bridget/Rdata/model_output/rf_mix_012423.RDS')
- saveRDS(loo1, file = '~/Users/dbeisel/Desktop/DATA/Bridget/Rdata/model_output/loo_noarma_012423.RDS')
+ saveRDS(rf.mix.new, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/rf_mix.RDS')
+ saveRDS(loo1, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_noarma.RDS')
 # 
 # Create priors for mix + div_flows model ####
 priors <- c(
@@ -145,7 +141,7 @@ summary(rf_arma_full)
 print('MAE')
 mae_lt(rf_arma_full, rf$Sum_AF)
 
-saveRDS(rf_arma_full, file = '~/scratch/CASC/model_output/arma_nogroup_041423.Rdata')
+saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
 # saveRDS(loo3, file = '~/scratch/CASC/model_ouptput/loo_arma_nogroup_012423.RDS')
 
 # # ARMA model for urban and climate, no canals
