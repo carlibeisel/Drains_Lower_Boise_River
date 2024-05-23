@@ -282,10 +282,7 @@ sd(data$scale_et)
 ## Add canal discharge as a predictor variable and standardize ####
 
 relates <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/SpatialJoin_Drain.csv')
-
-#confused . . . 
-divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input.csv') 
-
+divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/pod_pou_lulcc/model_input/mixed_model_input.csv') 
 spatial_dict <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/name_dictionary_spatial.csv')
 spatial_dict_drain <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/DrainRelates.csv')
 spatial_dict_drain <- subset(spatial_dict_drain, select = -c(Dataset, SiteID))
@@ -306,7 +303,7 @@ data <- dplyr :: left_join(data, sums, by = c('Name' = 'NewName',
 
 data$scale_DivFlow <- scale2sd(data$DivFlow)
 
-write.csv(data, '~/Desktop/DATA/Bridget/RData/mixed_model_input_041423.csv', row.names = FALSE)
+write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input.csv', row.names = FALSE)
 
 ## Check correlation between variables ##
 ## Don't want a correlation above 0.4 
@@ -321,7 +318,7 @@ avgs <- data %>%
 
 
 ## Perform Mann Kendall Test for each drain
-rf <- read.csv('~/Desktop/DATA/Bridget/Rdata/model_input.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input.csv')
 
 names <- data.frame(unique(rf$Name))
 
@@ -385,7 +382,7 @@ for (i in change_names){
 change <- data.frame(change)
 sum(change)
 ggarrange(plotlist = myplots, ncol=3, nrow=2)
-ggsave('~/Desktop/DATA/Bridget/Figures/mk_fig_0213.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/mk_fig.jpg', 
        width = 9,
        height = 5,
        units = 'in')
@@ -396,7 +393,7 @@ for (i in nochange_names){
   mynoplots[[i]] <- p
 }
 ggarrange(plotlist = mynoplots, ncol = 3, nrow=3)
-ggsave('~/Desktop/DATA/Bridget/Figures/nosig_mk_fig_0213.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/nosig_mk_fig.jpg', 
        width = 13,
        height = 10,
        units = 'in')
@@ -424,16 +421,3 @@ sum_plot <- ggplot(data = sums, aes(x = Year, y = total)) +
   geom_smooth(method = 'lm') +
   ylab('Total Discharge (AF/yr)') +
   xlab('Year')
-
-
-# ------------------------------------ #
-# Simplified dataset for publishing ####
-# ------------------------------------ #
-
-#drains not found? what is this? 
-
-drain_pub <- drains %>%
-  select(Name, Year, Sum_AF, irrig_prcp, irrig_temp, et, class1_urban, class2_crops, DivFlow)
-
-write.csv(drain_pub, file = '~/Desktop/DATA/Bridget/RData/drain_model_input_publish.csv',
-          row.names = FALSE)
