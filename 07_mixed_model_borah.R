@@ -27,7 +27,7 @@ library(loo)
 
 # Import the data 
 
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0531.csv')
 rf$lt <- log(rf$Sum_AF)
 
 ## MODEL FIT ####
