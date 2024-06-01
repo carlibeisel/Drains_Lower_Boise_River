@@ -29,7 +29,7 @@ library(flexmix)
 library(modelr)
 install.packages('magrittr')
 library(magrittr)
-library(dbplyr) #added 
+library(dplyr)
 install.packages('paletteer')
 library(paletteer)
 install.packages('ggpubr')
@@ -40,7 +40,7 @@ source("http://peterhaschke.com/Code/multiplot.R")
 
 ## INPUT THE DATA ##
 ## -------------- ##
-data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input.csv')
+data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0531.csv')
 na_data <- data[is.na(data)] # Check for NA data in the file
 data <- data[-c(1)] # Remove python index value column
 
@@ -74,6 +74,8 @@ dev.off()
 
 #omitted from iniital packages 
 #make sure dbplyr is installed 
+library(magrittr)
+library(dplyr)
 
 urb_change <- data %>%
   select(Name, class1_urban, Sum_AF) %>%
@@ -246,14 +248,13 @@ ggplot(data = displaydat) +
 dev.off()
 
 # Scale all the variables for model input
-#here
 scale2sd <- function(x){
   (x - mean(x))/(sd(x)*2)
 }
 
 col_name <- c('ant_prcp',
-              'irrig_prcp',
-              'irrig_temp',
+              'annual_prcp', #changed name from irrig_prcp
+              'irrig_temp', 
               'JuneAug_temp',
               'class1_urban',
               'class2_crops',
@@ -271,8 +272,10 @@ mean(data$scale_class1_urban)
 sd(data$scale_class1_urban)
 mean(data$scale_DivFlow)
 sd(data$scale_DivFlow)
-mean(data$scale_irrig_prcp)
-sd(data$scale_irrig_prcp)
+#mean(data$scale_irrig_prcp) #omitted for annual precip variable
+#sd(data$scale_irrig_prcp) 
+mean(data$scale_annual_prcp) #added for entire prcp metric
+sd(data$scale_annual_prcp) #added
 mean(data$scale_irrig_temp)
 sd(data$scale_irrig_temp)
 mean(data$scale_et)
@@ -303,7 +306,7 @@ data <- dplyr :: left_join(data, sums, by = c('Name' = 'NewName',
 
 data$scale_DivFlow <- scale2sd(data$DivFlow)
 
-write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input.csv', row.names = FALSE)
+write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0531.csv', row.names = FALSE)
 
 ## Check correlation between variables ##
 ## Don't want a correlation above 0.4 
@@ -318,7 +321,7 @@ avgs <- data %>%
 
 
 ## Perform Mann Kendall Test for each drain
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0531.csv')
 
 names <- data.frame(unique(rf$Name))
 
