@@ -27,7 +27,7 @@ unscale <- function(x, orig){
 }  
 
 ## Import data ####
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input.csv')  
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0531.csv')  
 arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
 
 # Check out model summary 
@@ -59,10 +59,11 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## URBAN EFFECT ####
 ## Step 1: Create data to generate the predictions over a continuous range of values:
+
 new = rf %>%
   data_grid(scale_class1_urban = seq_range(scale_class1_urban, n = 200),
             scale_et = mean(scale_et),
-            scale_irrig_prcp = mean(scale_irrig_prcp),
+            scale_annual_prcp = mean(scale_annual_prcp), #changed irrig_prcp to annual_prcp
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow))
 new$Name <- NA
@@ -109,7 +110,7 @@ change_urb <- epreddraws %>%
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_irrig_prcp = mean(scale_irrig_prcp),
+            scale_annual_prcp = mean(scale_annual_prcp), #changed from irrig_prcp to annual_prcp
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = seq_range(scale_et, n=200),
             scale_DivFlow = mean(scale_DivFlow))
@@ -156,7 +157,7 @@ mean(change_et$differ_pred, na.rm = T)
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_irrig_prcp = mean(scale_irrig_prcp),
+            scale_annual_prcp = mean(scale_annual_prcp), #changed from irrig_prcp to annual_prcp
             scale_irrig_temp = seq_range(scale_irrig_temp, n=200),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow))
@@ -203,7 +204,7 @@ mean(change_temp$diff_pred, na.rm = T)
 
 posterior <-as.data.frame(arma_ng)
 
-ggplot(posterior, aes(x = b_scale_irrig_prcp, 
+ggplot(posterior, aes(x = b_scale_annual_prcp, #changed irrig_prcp to annual_prcp
                       fill = stat(x < 0))) +
   stat_halfeye() +
   scale_fill_manual(values=c( "grey50", "#20a198"))+
@@ -214,31 +215,33 @@ ggplot(posterior, aes(x = b_scale_irrig_prcp,
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_irrig_prcp), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_annual_prcp), linetype = 'dotted') #changed irrig_prcp to annual_prcp
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-length(which(posterior$b_scale_irrig_prcp < 0))/nrow(posterior)
+length(which(posterior$b_scale_annual_prcp < 0))/nrow(posterior) #changed irrig_prcp to annual_prcp
 
 
 ## PRECIP EFFECT ####
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_irrig_prcp = seq_range(scale_irrig_prcp, n=200),
+            scale_annual_prcp = seq_range(scale_annual_prcp, n=200), #changed irrig_prcp to annual_prcp
             scale_irrig_temp = mean(scale_irrig_temp),
             et = mean(et),
             scale_DivFlow = mean(scale_DivFlow))
 simdata$Name <- NA
+
 #lt.auto_noyear variable in mixed_model.R in zz_archive
+
 epreddraws <-  add_epred_draws(lt.auto_noyear, 
                                newdata=simdata,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.precip <- (unscale(epreddraws$scale_irrig_prcp, rf$irrig_prcp)) * 0.03937
+epreddraws$unscale.precip <- (unscale(epreddraws$scale_annual_prcp, rf$irrig_prcp)) * 0.03937 #changed irrig_prcp to annual_prcp
 
 
 ggplot(data=epreddraws, 
@@ -259,7 +262,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_irrig_prcp = mean(scale_irrig_prcp),
+            scale_annual_prcp = mean(scale_annual_prcp), #changed irrig_prcp to annual_prcp
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = seq_range(scale_DivFlow, n=200))
@@ -296,13 +299,14 @@ change_canal <- epreddraws%>%
   mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, diff(avg, lag = 8)),
          diff_flow = c(NA, NA, NA, NA, NA, NA, NA, NA, diff(unscale.canal, lag = 8)))
 mean(change_canal$diff_pred, na.rm = T)
+
 ## Creating figures with ARMA terms ####
 
 new = rf %>%
   group_by(Name) %>%
   data_grid(scale_class1_urban = seq_range(scale_class1_urban, n = 200),
             et = mean(et),
-            scale_irrig_prcp = mean(scale_irrig_prcp),
+            scale_annual_prcp = mean(scale_annual_prcp), #changed irrig_prcp to annual_prcp
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow))
 #lt.auto_noyear file from above
@@ -363,13 +367,13 @@ print(colnames(arma_ng))
 mcmc_plot(arma_ng,
           type = 'areas',
           variable = c('b_scale_et',
-                       'b_scale_irrig_prcp',
+                       'b_scale_annual_prcp', #changed irrig_prcp to annual_prcp
                        'b_scale_irrig_temp'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
   scale_y_discrete(labels = c('Evapotranspiration',
-                              'Precipitation',
+                              'Annual Precipitation',
                               'Temperature')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
@@ -383,7 +387,7 @@ color_scheme_set('darkgray')
 mcmc_plot(arma_ng,
           type = 'areas',
           variable = c('b_scale_et',
-                       'b_scale_irrig_prcp',
+                       'b_scale_annual_prcp', #changed irrig_prcp to annual_prcp
                        'b_scale_irrig_temp',
                        'b_scale_class1_urban',
                        'b_scale_DivFlow'),
@@ -391,7 +395,7 @@ mcmc_plot(arma_ng,
   theme_bw() +
   vline_0() +
   scale_y_discrete(labels = c('Evapotranspiration',
-                              'Precipitation',
+                              'Annual Precipitation',
                               'Temperature',
                               'Urban Percentage',
                               'Canal Flows')) +
@@ -413,7 +417,7 @@ ggplot(posterior, aes(x = b_scale_class1_urban)) +
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_irrig_prcp), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_annual_prcp), linetype = 'dotted') #changed irrig_prcp to annual_prcp
 
 mcmc_plot(arma_ng,
           type = 'areas',
