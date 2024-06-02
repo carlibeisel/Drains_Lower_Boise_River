@@ -57,13 +57,14 @@ priors <- c(
    set_prior('normal(0,1)', class= 'sd'),
    set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
    set_prior('normal(0,5)', class = 'b', coef = 'et'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
+   set_prior('normal(0,5)', class = 'b', coef = 'scale_annual_prcp'), #changed irrig prcp to annual
    set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
    set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
  )
  
 # # MODEL: ALL WITH GROUP LEVEL EFFECT FOR URBAN AREA ####
-rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow,
+#changed scale_irrig_prcp to scale_annual_prcp
+rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_annual_prcp + scale_irrig_temp + scale_DivFlow,
                    data = rf,
                    iter = 2000,
                    family = 'lognormal',
@@ -89,7 +90,7 @@ priors <- c(
   set_prior('normal(2,1)', class = 'Intercept'),
   set_prior('normal(0,1)', class= 'sd'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_et'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_annual_prcp'), #prcp variable changed from irrig
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
@@ -122,7 +123,8 @@ priors <- c(
 # 
 ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_class1_urban + scale_et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+#changed prcp variable from irrig
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_class1_urban + scale_et + scale_annual_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
