@@ -256,7 +256,6 @@ col_name <- c('ant_prcp',
               'contagion',
               'largest_patch_index',
               'et', 
-              'DivFlow',
               'ubrb_prcp')
 
 for (i in col_name) {
@@ -421,3 +420,4 @@ sum_plot <- ggplot(data = sums, aes(x = Year, y = total)) +
   geom_smooth(method = 'lm') +
   ylab('Total Discharge (AF/yr)') +
   xlab('Year')
+
