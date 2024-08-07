@@ -59,7 +59,8 @@ priors <- c(
    set_prior('normal(0,5)', class = 'b', coef = 'et'),
    set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'), 
    set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
+   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
+   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp')
  )
  
 # # MODEL: ALL WITH GROUP LEVEL EFFECT FOR URBAN AREA ####

@@ -72,11 +72,6 @@ dev.off()
 ## URBAN CHANGE ##
 ## ------------ ##
 
-#omitted from initial packages 
-#make sure dbplyr is installed 
-library(magrittr)
-library(dplyr)
-
 urb_change <- data %>%
   select(Name, class1_urban, Sum_AF) %>%
   group_by(Name) %>%
@@ -260,7 +255,9 @@ col_name <- c('ant_prcp',
               'class2_crops',
               'contagion',
               'largest_patch_index',
-              'et')
+              'et', 
+              'DivFlow',
+              'ubrb_prcp')
 
 for (i in col_name) {
   name <- colnames(data[i])
@@ -272,12 +269,14 @@ mean(data$scale_class1_urban)
 sd(data$scale_class1_urban)
 mean(data$scale_DivFlow)
 sd(data$scale_DivFlow)
-mean(data$scale_wy_prcp) #changed
-sd(data$scale_wy_prcp) #changed
+mean(data$scale_wy_prcp) 
+sd(data$scale_wy_prcp) 
 mean(data$scale_irrig_temp)
 sd(data$scale_irrig_temp)
 mean(data$scale_et)
 sd(data$scale_et)
+mean(data$scale_ubrb_prcp)
+sd(data$scale_ubrb_prcp)
 
 
 ## Add canal discharge as a predictor variable and standardize ####
