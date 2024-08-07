@@ -6,6 +6,8 @@
 # Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
 # Date adapted: May 22, 2024
 
+#Note to self: ADD UBRB Precip alone figure
+
 ## Figures for drain discharge models ##
 
 ## Load packages ##
@@ -65,7 +67,8 @@ new = rf %>%
             scale_et = mean(scale_et),
             scale_wy_prcp = mean(scale_wy_prcp), 
             scale_irrig_temp = mean(scale_irrig_temp),
-            scale_DivFlow = mean(scale_DivFlow))
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
@@ -113,7 +116,8 @@ simdata = rf %>%
             scale_wy_prcp = mean(scale_wy_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = seq_range(scale_et, n=200),
-            scale_DivFlow = mean(scale_DivFlow))
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
 simdata$Name <- NA
 epreddraws <-  add_epred_draws(arma_ng, 
                                newdata=simdata,
@@ -160,7 +164,8 @@ simdata = rf %>%
             scale_wy_prcp = mean(scale_wy_prcp),
             scale_irrig_temp = seq_range(scale_irrig_temp, n=200),
             scale_et = mean(scale_et),
-            scale_DivFlow = mean(scale_DivFlow))
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -231,7 +236,8 @@ simdata = rf %>%
             scale_wy_prcp = seq_range(scale_wy_prcp, n=200),
             scale_irrig_temp = mean(scale_irrig_temp),
             et = mean(et),
-            scale_DivFlow = mean(scale_DivFlow))
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
 simdata$Name <- NA
 
 lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
@@ -276,7 +282,8 @@ simdata = rf %>%
             scale_wy_prcp = mean(scale_wy_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
-            scale_DivFlow = seq_range(scale_DivFlow, n=200))
+            scale_DivFlow = seq_range(scale_DivFlow, n=200),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -378,13 +385,14 @@ mcmc_plot(arma_ng,
           type = 'areas',
           variable = c('b_scale_et',
                        'b_scale_wy_prcp', 
-                       'b_scale_irrig_temp'),
+                       'b_scale_irrig_temp',
+                       'b_scale_ubrb_prcp'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
   scale_y_discrete(labels = c('Evapotranspiration',
                               'Water Year Precipitation',
-                              'Temperature')) +
+                              'Temperature', 'UBRB Water Year Precip')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_climate.jpg', 
@@ -400,7 +408,8 @@ mcmc_plot(arma_ng,
                        'b_scale_wy_prcp',
                        'b_scale_irrig_temp',
                        'b_scale_class1_urban',
-                       'b_scale_DivFlow'),
+                       'b_scale_DivFlow',
+                       'b_scale_ubrb_prcp'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
@@ -408,7 +417,8 @@ mcmc_plot(arma_ng,
                               'Water Year Precipitation',
                               'Temperature',
                               'Urban Percentage',
-                              'Canal Flows')) +
+                              'Canal Flows',
+                              'UBRB Water Year Precip')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
@@ -468,7 +478,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp,canal, ncol=2, nrow = 2, labels = c('A', 'B', 'C', 'D'))
+ggarrange(urban, et, temp,canal, ncol=3, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
