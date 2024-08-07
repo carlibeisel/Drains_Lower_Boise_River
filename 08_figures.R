@@ -234,15 +234,26 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow))
 simdata$Name <- NA
 
-#lt.auto_noyear variable in mixed_model.R in zz_archive
+lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+                           data = rf,
+                           iter = 4000,
+                           family = 'normal',
+                           prior = priors,
+                           control = list(max_treedepth = 20,
+                                          adapt_delta = 0.999),
+                           cores = getOption('mc.cores', parallel::detectCores()),
+                           save_pars = save_pars(all = TRUE))
+summary(lt.auto_noyear)
+save(lt.auto_noyear, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/lt_auto_noyear.Rdata')
 
 epreddraws <-  add_epred_draws(lt.auto_noyear, 
                                newdata=simdata,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.precip <- (unscale(epreddraws$scale_wy_prcp, rf$irrig_prcp)) * 0.03937
+epreddraws$unscale.precip <- (unscale(epreddraws$scale_wy_prcp, rf$wy_prcp)) * 0.03937
 
+class(precip)
 
 ggplot(data=epreddraws, 
        aes(x = unscale.precip, y = exp(.epred))) +
