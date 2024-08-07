@@ -5,7 +5,7 @@
 # By Carli Beisel
 # Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
 # Date created: 01/11/23
-# Date adapted: May 22, 2024
+# Date adapted: August 7, 2024
 
 # Import packages:
 #install.packages('brms')
@@ -95,8 +95,7 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
 )
 # 
-# ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
-# 
+# # ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
 # lt.div.auto.011123 <- brm(lt ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma(gr = Name),
 #                    data = rf,
 #                    iter = 4000,
@@ -118,8 +117,7 @@ priors <- c(
 # loo2
 # 
 # saveRDS(lt.div.auto.011123, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma.RDS')
-# saveRDS(loo2, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma.RDS')
-# 
+# saveRDS(loo2, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma.RDS')
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
