@@ -8,26 +8,26 @@
 # Date adapted: May 22, 2024
 
 # Import packages:
-install.packages('brms')
+#install.packages('brms')
 library(brms)
-install.packages('bayesplot')
+#install.packages('bayesplot')
 library(bayesplot)
 library(tidyverse)
-install.packages('tidybayes')
+#install.packages('tidybayes')
 library(tidybayes)
 library(plyr)
 library(dplyr)
 library(readr)
 library(tibble)
 library(ggrepel)
-install.packages('flexmix')
+#install.packages('flexmix')
 library(flexmix)
 library(modelr)
 library(loo)
 
 # Import the data 
 
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0531.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
 rf$lt <- log(rf$Sum_AF)
 
 ## MODEL FIT ####
@@ -57,14 +57,13 @@ priors <- c(
    set_prior('normal(0,1)', class= 'sd'),
    set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
    set_prior('normal(0,5)', class = 'b', coef = 'et'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_annual_prcp'), #changed irrig prcp to annual
+   set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'), 
    set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
    set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
  )
  
 # # MODEL: ALL WITH GROUP LEVEL EFFECT FOR URBAN AREA ####
-#changed scale_irrig_prcp to scale_annual_prcp
-rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_annual_prcp + scale_irrig_temp + scale_DivFlow,
+rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow,
                    data = rf,
                    iter = 2000,
                    family = 'lognormal',
@@ -90,7 +89,7 @@ priors <- c(
   set_prior('normal(2,1)', class = 'Intercept'),
   set_prior('normal(0,1)', class= 'sd'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_et'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_annual_prcp'), #prcp variable changed from irrig
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'), 
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
@@ -98,7 +97,7 @@ priors <- c(
 # 
 # ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
 # 
-# lt.div.auto.011123 <- brm(lt ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma(gr = Name),
+# lt.div.auto.011123 <- brm(lt ~ (1 + scale_class1_urban | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma(gr = Name),
 #                    data = rf,
 #                    iter = 4000,
 #                    family = 'normal',
@@ -118,13 +117,13 @@ priors <- c(
 # loo2 <- loo(lt.div.auto.011123, reloo = TRUE)
 # loo2
 # 
-# saveRDS(lt.div.auto.011123, file = '~/scratch/CASC/model_output/arma_012423.RDS')
-# saveRDS(loo2, file = '~/scratch/CASC/model_output/loo_arma_012423.RDS')
+# saveRDS(lt.div.auto.011123, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma.RDS')
+# saveRDS(loo2, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma.RDS')
 # 
-## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-#changed prcp variable from irrig
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_class1_urban + scale_et + scale_annual_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+ ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
+
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
@@ -144,19 +143,19 @@ print('MAE')
 mae_lt(rf_arma_full, rf$Sum_AF)
 
 saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
-# saveRDS(loo3, file = '~/scratch/CASC/model_ouptput/loo_arma_nogroup_012423.RDS')
+# saveRDS(loo3, file = /Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma_nogroup.RDS')
 
 # # ARMA model for urban and climate, no canals
 # priors <- c(
 #   set_prior('normal(2,1)', class = 'Intercept'),
 #   set_prior('normal(0,1)', class= 'sd'),
 #   set_prior('normal(0,5)', class = 'b', coef = 'et'),
-#   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
+#   set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'),
 #   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
 #   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban')
 # )
 # 
-# lt.nocanal <- brm(lt ~ (1 | Name + scale_class1_urban) + scale_class1_urban + et + scale_irrig_prcp + scale_irrig_temp + arma( gr = Name),
+# lt.nocanal <- brm(lt ~ (1 | Name + scale_class1_urban) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + arma( gr = Name),
 #                          data = rf,
 #                          iter = 4000,
 #                          family = 'normal',
@@ -175,19 +174,19 @@ saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_B
 # print('MAE')
 # mae_lt(lt.nocanal, rf$Sum_AF)
 # 
-# saveRDS(lt.nocanal, file = '~/scratch/CASC/model_output/arma_nocanal_0213.Rdata')
-# saveRDS(loo4, file = '~/scratch/CASC/model_ouptput/loo_nocanal_0213.RDS')
+# saveRDS(lt.nocanal, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nocanal.Rdata')
+# saveRDS(loo4, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_nocanal.RDS')
 # 
 # # Model for ARMA + climate
 # priors <- c(
 #   set_prior('normal(2,1)', class = 'Intercept'),
 #   set_prior('normal(0,1)', class= 'sd'),
 #   set_prior('normal(0,5)', class = 'b', coef = 'et'),
-#   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
+#   set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'),
 #   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp')
 # )
 # 
-# lt.clim <- brm(lt ~ (1 | Name) + et + scale_irrig_prcp + scale_irrig_temp + arma( gr = Name),
+# lt.clim <- brm(lt ~ (1 | Name) + et + scale_wy_prcp + scale_irrig_temp + arma( gr = Name),
 #                   data = rf,
 #                   iter = 4000,
 #                   family = 'normal',
@@ -206,8 +205,8 @@ saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_B
 # print('MAE')
 # mae_lt(lt.clim, rf$Sum_AF)
 # 
-# saveRDS(lt.clim, file = '~/scratch/CASC/model_output/arma_clim_0213.Rdata')
-# saveRDS(loo5, file = '~/scratch/CASC/model_ouptput/loo_clim_0213.RDS')
+# saveRDS(lt.clim, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_clim.Rdata')
+# saveRDS(loo5, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_clim.RDS')
 # 
 # #ARMA with urban 
 # priors <- c(
@@ -236,5 +235,5 @@ saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_B
 # print('MAE')
 # mae_lt(lt.urb, rf$Sum_AF)
 # 
-# saveRDS(lt.urb, file = '~/scratch/CASC/model_output/arma_urb_0213.Rdata')
-# saveRDS(loo6, file = '~/scratch/CASC/model_ouptput/loo_urb_0213.RDS')
+# saveRDS(lt.urb, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_urb.Rdata')
+# saveRDS(loo6, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_urb.RDS')
