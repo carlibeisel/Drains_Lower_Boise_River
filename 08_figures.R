@@ -109,6 +109,55 @@ change_urb <- epreddraws %>%
          differ_urb = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA, diff(unscale.urban, lag = 21)))
 
+## UBRB Precip EFFECT ####
+
+simdata = rf %>%
+  data_grid(scale_class1_urban = mean(scale_class1_urban),
+            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_temp = mean(scale_irrig_temp),
+            scale_et = seq_range(scale_et, n=200),
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+simdata$Name <- NA
+epreddraws <-  add_epred_draws(arma_ng, 
+                               newdata=simdata,
+                               ndraws=1000,
+                               re_formula=NA
+)
+
+epreddraws$unscale_ubrb_prcp_in <- unscale(epreddraws$scale_ubrb_prcp, rf$et) * 39.3701 #convert ET to inches
+
+ubrb_prcp <- ggplot(data=epreddraws, 
+             aes(x = unscale_ubrb_prcp_in, y = exp(.epred))) +
+  stat_lineribbon(
+    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    color="black", size=2) + 
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("UBRB Precip (mm)") +
+  theme_bw() +
+  theme(text = element_text(size = 13)) +
+  scale_y_continuous(labels = scales::comma) +
+  coord_cartesian(ylim = c(1000, 40000))
+ubrb_prcp
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_marg.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+change_ubrc_prcp <- epreddraws %>%
+  select(unscale_ubrb_prcp_in, .epred) %>%
+  group_by(unscale_ubrb_prcp_in) %>%
+  summarize(avg = mean(exp(.epred))) %>%
+  mutate(differ_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
+                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
+                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
+                         diff(avg, lag = 30)),
+         differ_et = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
+                       diff(unscale_ubrb_prcp_in, lag = 30)))
+mean(change_et$differ_pred, na.rm = T)
+
+
 ## ET EFFECT ####
 
 simdata = rf %>%
@@ -239,6 +288,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp))
 simdata$Name <- NA
+
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
+rf$lt <- log(rf$Sum_AF)
 
 lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                            data = rf,
