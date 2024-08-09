@@ -6,7 +6,7 @@
 # Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
 # Date adapted: May 22, 2024
 
-#Note to self: ADD UBRB Precip alone figure
+#Note to self: Fix UBRB Precip alone figure
 
 ## Figures for drain discharge models ##
 
@@ -133,6 +133,28 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
 
+## UBRB PRECIP POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_ubrb_prcp,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of UBRB Water Year Precipitation')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_ubrb_prcp), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
 
 ## UBRB PRECIP EFFECT ####
 
@@ -142,7 +164,7 @@ simdata = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             et = mean(et),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200))
 simdata$Name <- NA
 
 rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
@@ -158,19 +180,19 @@ lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_ubrb_prcp + scale_class1_urban + e
                       cores = getOption('mc.cores', parallel::detectCores()),
                       save_pars = save_pars(all = TRUE))
 summary(lt.auto_noyear)
-save(lt.auto_noyear, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/lt_auto_noyear_ubrb.Rdata')
+save(lt.auto_noyear, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/lt_auto_noyear.Rdata')
 
 epreddraws <-  add_epred_draws(lt.auto_noyear, 
                                newdata=simdata,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.ubrb_prcp <- (unscale(epreddraws$scale_ubrb_prcp, rf$wy_prcp)) * 0.03937
+epreddraws$unscale.ubrb_precip <- (unscale(epreddraws$scale_ubrb_prcp, rf$ubrb_prcp)) * 0.03937
 
-class(ubrb_prcp)
+class(ubrb_precip)
 
 ggplot(data=epreddraws, 
-       aes(x = unscale.ubrb_prcp, y = exp(.epred))) +
+       aes(x = unscale.ubrb_precip, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
@@ -181,8 +203,6 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
        width = 4,
        height = 4,
        units = 'in')
-
-
 
 ## ET EFFECT ####
 
@@ -318,7 +338,7 @@ simdata$Name <- NA
 rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
 rf$lt <- log(rf$Sum_AF)
 
-lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                            data = rf,
                            iter = 4000,
                            family = 'normal',
@@ -556,7 +576,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp,canal, ncol=2, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E'))
+ggarrange(urban, et, temp,canal, ubrb_prcp, ncol=3, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
