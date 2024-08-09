@@ -109,53 +109,79 @@ change_urb <- epreddraws %>%
          differ_urb = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA, diff(unscale.urban, lag = 21)))
 
-## UBRB Precip EFFECT ####
+
+s## PRECIP POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_wy_prcp,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of Water Year Precipitation')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
+
+
+## UBRB PRECIP EFFECT ####
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_wy_prcp = seq_range(scale_wy_prcp, n=200),
             scale_irrig_temp = mean(scale_irrig_temp),
-            scale_et = seq_range(scale_et, n=200),
+            et = mean(et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp))
 simdata$Name <- NA
-epreddraws <-  add_epred_draws(arma_ng, 
+
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
+rf$lt <- log(rf$Sum_AF)
+
+lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+                      data = rf,
+                      iter = 4000,
+                      family = 'normal',
+                      prior = priors,
+                      control = list(max_treedepth = 20,
+                                     adapt_delta = 0.999),
+                      cores = getOption('mc.cores', parallel::detectCores()),
+                      save_pars = save_pars(all = TRUE))
+summary(lt.auto_noyear)
+save(lt.auto_noyear, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/lt_auto_noyear_ubrb.Rdata')
+
+epreddraws <-  add_epred_draws(lt.auto_noyear, 
                                newdata=simdata,
                                ndraws=1000,
                                re_formula=NA
 )
+epreddraws$unscale.ubrb_prcp <- (unscale(epreddraws$scale_ubrb_prcp, rf$wy_prcp)) * 0.03937
 
-epreddraws$unscale_ubrb_prcp_in <- unscale(epreddraws$scale_ubrb_prcp, rf$et) * 39.3701 #convert ET to inches
+class(ubrb_prcp)
 
-ubrb_prcp <- ggplot(data=epreddraws, 
-             aes(x = unscale_ubrb_prcp_in, y = exp(.epred))) +
+ggplot(data=epreddraws, 
+       aes(x = unscale.ubrb_prcp, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("UBRB Precip (mm)") +
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("UBRB Water Year Precip. (mm)")  +
   theme_bw() +
-  theme(text = element_text(size = 13)) +
-  scale_y_continuous(labels = scales::comma) +
-  coord_cartesian(ylim = c(1000, 40000))
-ubrb_prcp
+  theme(text = element_text(size = 18))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-change_ubrc_prcp <- epreddraws %>%
-  select(unscale_ubrb_prcp_in, .epred) %>%
-  group_by(unscale_ubrb_prcp_in) %>%
-  summarize(avg = mean(exp(.epred))) %>%
-  mutate(differ_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
-                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
-                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
-                         diff(avg, lag = 30)),
-         differ_et = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
-                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
-                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
-                       diff(unscale_ubrb_prcp_in, lag = 30)))
-mean(change_et$differ_pred, na.rm = T)
 
 
 ## ET EFFECT ####
@@ -530,7 +556,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp,canal, ncol=3, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E'))
+ggarrange(urban, et, temp,canal, ncol=2, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
