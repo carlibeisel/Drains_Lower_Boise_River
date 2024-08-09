@@ -6,8 +6,6 @@
 # Adapted from Bridget Bittmann (2023, Github: bridgetmarie24)
 # Date adapted: May 22, 2024
 
-#Note to self: Fix UBRB Precip alone figure
-
 ## Figures for drain discharge models ##
 
 ## Load packages ##
@@ -110,7 +108,7 @@ change_urb <- epreddraws %>%
                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA, diff(unscale.urban, lag = 21)))
 
 
-s## PRECIP POSTERIOR MASS ####
+## PRECIP POSTERIOR MASS ####
 
 posterior <-as.data.frame(arma_ng)
 
@@ -154,55 +152,8 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
        height = 4,
        units = 'in')
 
-length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
+length(which(posterior$b_scale_ubrb_prcp < 0))/nrow(posterior) 
 
-## UBRB PRECIP EFFECT ####
-
-simdata = rf %>%
-  data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = seq_range(scale_wy_prcp, n=200),
-            scale_irrig_temp = mean(scale_irrig_temp),
-            et = mean(et),
-            scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200))
-simdata$Name <- NA
-
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
-rf$lt <- log(rf$Sum_AF)
-
-lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
-                      data = rf,
-                      iter = 4000,
-                      family = 'normal',
-                      prior = priors,
-                      control = list(max_treedepth = 20,
-                                     adapt_delta = 0.999),
-                      cores = getOption('mc.cores', parallel::detectCores()),
-                      save_pars = save_pars(all = TRUE))
-summary(lt.auto_noyear)
-save(lt.auto_noyear, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/lt_auto_noyear.Rdata')
-
-epreddraws <-  add_epred_draws(lt.auto_noyear, 
-                               newdata=simdata,
-                               ndraws=1000,
-                               re_formula=NA
-)
-epreddraws$unscale.ubrb_precip <- (unscale(epreddraws$scale_ubrb_prcp, rf$ubrb_prcp)) * 0.03937
-
-class(ubrb_precip)
-
-ggplot(data=epreddraws, 
-       aes(x = unscale.ubrb_precip, y = exp(.epred))) +
-  stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
-    color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("UBRB Water Year Precip. (mm)")  +
-  theme_bw() +
-  theme(text = element_text(size = 18))
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_marg.jpg', 
-       width = 4,
-       height = 4,
-       units = 'in')
 
 ## ET EFFECT ####
 
@@ -323,55 +274,101 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
 
-
-## PRECIP EFFECT ####
-
+## UBRB Precip EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = seq_range(scale_wy_prcp, n=200),
+            scale_wy_prcp = mean(scale_wy_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            et = mean(et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200))
 simdata$Name <- NA
 
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
-rf$lt <- log(rf$Sum_AF)
-
-lt.auto_noyear <- brm(lt ~ (1 | Name) + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
-                           data = rf,
-                           iter = 4000,
-                           family = 'normal',
-                           prior = priors,
-                           control = list(max_treedepth = 20,
-                                          adapt_delta = 0.999),
-                           cores = getOption('mc.cores', parallel::detectCores()),
-                           save_pars = save_pars(all = TRUE))
-summary(lt.auto_noyear)
-save(lt.auto_noyear, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/lt_auto_noyear.Rdata')
-
-epreddraws <-  add_epred_draws(lt.auto_noyear, 
+epreddraws <-  add_epred_draws(arma_ng, 
                                newdata=simdata,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.precip <- (unscale(epreddraws$scale_wy_prcp, rf$wy_prcp)) * 0.03937
+epreddraws$unscale.precip <- (unscale(epreddraws$scale_ubrb_prcp,
+                                    rf$ubrb_prcp))* 0.03937
 
-class(precip)
 
-ggplot(data=epreddraws, 
-       aes(x = unscale.precip, y = exp(.epred))) +
+precip <- ggplot(data=epreddraws, 
+               aes(x = unscale.precip, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Total Water Year Precip. (in)")  +
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. UBRB Water Year Precip (in)")  +
   theme_bw() +
-  theme(text = element_text(size = 18))
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_marg.jpg', 
+  theme(text = element_text(size = 13)) + 
+  scale_y_continuous(labels = scales::comma)+
+  coord_cartesian(ylim = c(1000, 40000))
+precip
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
+change_precip <- epreddraws%>%
+  select(unscale.precip, .epred) %>%
+  group_by(unscale.precip) %>%
+  summarize(avg = mean(exp(.epred))) %>%
+  mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(avg, lag = 22)),
+         diff_temp = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(unscale.precip, lag = 22))) 
+
+mean(change_precip$diff_pred, na.rm = T)
+
+## PRECIP EFFECT ####
+simdata = rf %>%
+  data_grid(scale_class1_urban = mean(scale_class1_urban),
+            scale_wy_prcp = seq_range(scale_wy_prcp, n=200),
+            scale_irrig_temp = mean(scale_irrig_temp),
+            scale_et = mean(scale_et),
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+simdata$Name <- NA
+
+epreddraws <-  add_epred_draws(arma_ng, 
+                               newdata=simdata,
+                               ndraws=1000,
+                               re_formula=NA
+)
+epreddraws$unscale.precip <- (unscale(epreddraws$scale_wy_prcp,
+                                      rf$wy_prcp))* 0.03937
+
+
+precip <- ggplot(data=epreddraws, 
+                 aes(x = unscale.precip, y = exp(.epred))) +
+  stat_lineribbon(
+    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    color="black", size=2) + 
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Water Year Precip (in)")  +
+  theme_bw() +
+  theme(text = element_text(size = 13)) + 
+  scale_y_continuous(labels = scales::comma)+
+  coord_cartesian(ylim = c(1000, 40000))
+precip
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/wy_prcp_marg.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+change_precip <- epreddraws%>%
+  select(unscale.precip, .epred) %>%
+  group_by(unscale.precip) %>%
+  summarize(avg = mean(exp(.epred))) %>%
+  mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(avg, lag = 22)),
+         diff_temp = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(unscale.precip, lag = 22))) 
+
+mean(change_precip$diff_pred, na.rm = T)
 
 ## CANAL EFFECT ####
 
