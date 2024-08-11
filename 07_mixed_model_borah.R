@@ -27,7 +27,7 @@ library(loo)
 
 # Import the data 
 
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0811.csv')
 rf$lt <- log(rf$Sum_AF)
 
 ## MODEL FIT ####
@@ -60,11 +60,12 @@ priors <- c(
    set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'), 
    set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
    set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp')
+   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
+   set_prior('normal(0,5)', class = 'b', coef = 'pivot_prop')
  )
  
 # # MODEL: ALL WITH GROUP LEVEL EFFECT FOR URBAN AREA ####
-rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow,
+rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + pivot_prop + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow,
                    data = rf,
                    iter = 2000,
                    family = 'lognormal',
@@ -94,7 +95,8 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp')
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
+  set_prior('normal(0,5)', class = 'b', coef = 'pivot_prop')
 )
 # 
 # # ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
@@ -123,7 +125,7 @@ priors <- c(
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_full <- brm(lt ~ (1 | Name) + pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
