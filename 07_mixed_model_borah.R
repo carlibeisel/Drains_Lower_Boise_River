@@ -53,40 +53,40 @@ mae_lt <- function(model, data_compare){
 # Create a model to understand changes in drainage rates through time
 
 # # Create priors for model with all variables ####
-priors <- c(
-   set_prior('normal(2,1)', class = 'Intercept'),
-   set_prior('normal(0,1)', class= 'sd'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
-   set_prior('normal(0,5)', class = 'b', coef = 'et'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'), 
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
-   set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover')
- )
- 
-# # MODEL: ALL WITH GROUP LEVEL EFFECT FOR URBAN AREA ####
-rf.mix.new <- brm(Sum_AF ~ (1 + scale_class1_urban | Name) + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow,
-                   data = rf,
-                   iter = 2000,
-                   family = 'lognormal',
-                   prior = priors,
-                   control = list(max_treedepth = 20,
-                                  adapt_delta = 0.999),
-                   cores = getOption('mc.cores', parallel::detectCores()))
- loo1 <- loo(rf.mix.new, reloo = TRUE)
- print("Model: No arma, all variables")
- summary(rf.mix.new)
-# 
- print('LOO')
- loo1
-# 
- print('MAE')
- mae(rf.mix.new, rf$Sum_AF)
-# 
- saveRDS(rf.mix.new, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/rf_mix.RDS')
- saveRDS(loo1, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_noarma.RDS')
+# priors <- c(
+#    set_prior('normal(2,1)', class = 'Intercept'),
+#    set_prior('normal(0,1)', class= 'sd'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'et'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_wy_prcp'), 
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
+#    set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover')
+#  )
+#  
+# # # MODEL: ALL WITH GROUP LEVEL EFFECT FOR URBAN AREA ####
+# rf.mix.new <- brm(Sum_AF ~ (1  + scale_class1_urban| Name) + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow,
+#                    data = rf,
+#                    iter = 2000,
+#                    family = 'lognormal',
+#                    prior = priors,
+#                    control = list(max_treedepth = 20,
+#                                   adapt_delta = 0.999),
+#                    cores = getOption('mc.cores', parallel::detectCores()))
+#  loo1 <- loo(rf.mix.new, reloo = TRUE)
+#  print("Model: No arma, all variables")
+#  summary(rf.mix.new)
+# # 
+#  print('LOO')
+#  loo1
+# # 
+#  print('MAE')
+#  mae(rf.mix.new, rf$Sum_AF)
+# # 
+#  saveRDS(rf.mix.new, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/rf_mix.RDS')
+#  saveRDS(loo1, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_noarma.RDS')
 # 
 # Create priors for mix + div_flows model ####
 priors <- c(
