@@ -40,7 +40,7 @@ source("http://peterhaschke.com/Code/multiplot.R")
 
 ## INPUT THE DATA ##
 ## -------------- ##
-data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0811.csv')
+data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0812.csv')
 na_data <- data[is.na(data)] # Check for NA data in the file
 data <- data[-c(1)] # Remove python index value column
 
@@ -258,7 +258,8 @@ col_name <- c('ant_prcp',
               'largest_patch_index',
               'et', 
               'ubrb_prcp',
-              'pivot_prop')
+              'pivot_prop',
+              'Carryover')
 
 for (i in col_name) {
   name <- colnames(data[i])
@@ -280,12 +281,14 @@ mean(data$scale_ubrb_prcp)
 sd(data$scale_ubrb_prcp)
 mean(data$scale_pivot_prop)
 sd(data$scale_pivot_prop)
+mean(data$scale_Carryover)
+sd(data$scale_Carryover)
 
 
 ## Add canal discharge as a predictor variable and standardize ####
 
 relates <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/SpatialJoin_Drain.csv')
-divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0811.csv') 
+divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0812.csv') 
 spatial_dict <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/name_dictionary_spatial.csv')
 spatial_dict_drain <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/DrainRelates.csv')
 spatial_dict_drain <- subset(spatial_dict_drain, select = -c(Dataset, SiteID))
@@ -306,7 +309,7 @@ data <- dplyr :: left_join(data, sums, by = c('Name' = 'NewName',
 
 data$scale_DivFlow <- scale2sd(data$DivFlow)
 
-write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0811.csv', row.names = FALSE)
+write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0812.csv', row.names = FALSE)
 
 ## Check correlation between variables ##
 ## Don't want a correlation above 0.4 
@@ -321,7 +324,7 @@ avgs <- data %>%
 
 
 ## Perform Mann Kendall Test for each drain
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0811.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0812.csv')
 
 names <- data.frame(unique(rf$Name))
 
