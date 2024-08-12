@@ -248,6 +248,7 @@ scale2sd <- function(x){
 }
 
 col_name <- c('ant_prcp',
+              'DivFlow',
               'wy_prcp', 
               'irrig_temp', 
               'JuneAug_temp',
