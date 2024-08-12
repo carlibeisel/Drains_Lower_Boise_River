@@ -67,7 +67,7 @@ new = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            pivot_prop = pivot_prop) #correct writing? CHECK 
+            scale_pivot_prop = mean(pivot_prop)) 
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
@@ -164,7 +164,8 @@ simdata = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = seq_range(scale_et, n=200),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            scale_pivot_prop = mean(scale_pivot_prop))
 simdata$Name <- NA
 epreddraws <-  add_epred_draws(arma_ng, 
                                newdata=simdata,
@@ -212,7 +213,8 @@ simdata = rf %>%
             scale_irrig_temp = seq_range(scale_irrig_temp, n=200),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            scale_pivot_prop = mean(scale_pivot_prop))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -252,6 +254,80 @@ change_temp <- epreddraws%>%
                        diff(unscale.temp, lag = 22))) 
 
 mean(change_temp$diff_pred, na.rm = T)
+
+## IRRIGATION CHANGE EFFECT ####
+
+simdata = rf %>%
+  data_grid(scale_class1_urban = mean(scale_class1_urban),
+            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_temp = mean(scale_irrig_temp),
+            scale_et = mean(scale_et),
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            scale_pivot_prop = seq_range(scale_pivot_prop, n = 200))
+simdata$Name <- NA
+
+epreddraws <-  add_epred_draws(arma_ng, 
+                               newdata=simdata,
+                               ndraws=1000,
+                               re_formula=NA
+)
+epreddraws$unscale.pivot <- (unscale(epreddraws$scale_pivot_prop,
+                                    rf$pivot_prop) * 9/5) +32
+
+
+pivot <- ggplot(data=epreddraws, 
+               aes(x = unscale.pivot, y = exp(.epred))) +
+  stat_lineribbon(
+    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    color="black", size=2) + 
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Proporiton of Land Pivot Irrigated")  +
+  theme_bw() +
+  theme(text = element_text(size = 13)) + 
+  scale_y_continuous(labels = scales::comma)+
+  coord_cartesian(ylim = c(1000, 40000))
+pivot
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/pivot_marg.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+change_pivot <- epreddraws%>%
+  select(unscale.pivot, .epred) %>%
+  group_by(unscale.pivot) %>%
+  summarize(avg = mean(exp(.epred))) %>%
+  mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(avg, lag = 22)),
+         diff_pivot = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(unscale.pivot, lag = 22))) 
+
+mean(change_pivot$diff_pred, na.rm = T)
+
+## Irrigation Change POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_pivot_prop,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of Irrigation Change')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_pivot_prop), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/pivot_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_pivot_prop < 0))/nrow(posterior) 
+
 ## PRECIP POSTERIOR MASS ####
 
 posterior <-as.data.frame(arma_ng)
@@ -282,7 +358,8 @@ simdata = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200))
+            scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200),
+            scale_pivot_prop = mean(scale_pivot_prop))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -330,7 +407,8 @@ simdata = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            scale_pivot_prop = mean(scale_pivot_prop))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -379,7 +457,8 @@ simdata = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = seq_range(scale_DivFlow, n=200),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            scale_pivot_prop = mean(scale_pivot_prop))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -487,7 +566,7 @@ mcmc_plot(arma_ng,
   theme_bw() +
   vline_0() +
   scale_y_discrete(labels = c('Evapotranspiration',
-                              'Water Year Precipitation',
+                              'Drainshed Water Year Precipitation',
                               'Temperature', 'UBRB Water Year Precip')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
@@ -505,7 +584,8 @@ mcmc_plot(arma_ng,
                        'b_scale_irrig_temp',
                        'b_scale_class1_urban',
                        'b_scale_DivFlow',
-                       'b_scale_ubrb_prcp'),
+                       'b_scale_ubrb_prcp',
+                       'b_scale_pivot_prop'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
@@ -514,7 +594,8 @@ mcmc_plot(arma_ng,
                               'Temperature',
                               'Urban Percentage',
                               'Canal Flows',
-                              'UBRB Water Year Precip')) +
+                              'UBRB Water Year Precip',
+                              'Pivot Irrigation Proportion')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
@@ -574,7 +655,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp,canal, ubrb_prcp, ncol=3, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E'))
+ggarrange(urban, et, temp, canal, precip, pivot, ncol=3, nrow = 3, labels = c('A', 'B', 'C', 'D', 'E', 'F'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,

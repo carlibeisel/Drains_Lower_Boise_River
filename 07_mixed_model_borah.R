@@ -13,6 +13,7 @@ library(brms)
 #install.packages('bayesplot')
 library(bayesplot)
 library(tidyverse)
+
 #install.packages('tidybayes')
 library(tidybayes)
 library(plyr)
@@ -125,7 +126,7 @@ priors <- c(
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
