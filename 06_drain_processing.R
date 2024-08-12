@@ -248,7 +248,6 @@ scale2sd <- function(x){
 }
 
 col_name <- c('ant_prcp',
-              'DivFlow',
               'wy_prcp', 
               'irrig_temp', 
               'JuneAug_temp',
@@ -288,7 +287,7 @@ sd(data$scale_Carryover)
 ## Add canal discharge as a predictor variable and standardize ####
 
 relates <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/SpatialJoin_Drain.csv')
-divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0812.csv') 
+divflows <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/pod_pou_lulcc/model_input/mixed_model_input_0531.csv') 
 spatial_dict <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/name_dictionary_spatial.csv')
 spatial_dict_drain <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/drains/DrainRelates.csv')
 spatial_dict_drain <- subset(spatial_dict_drain, select = -c(Dataset, SiteID))
