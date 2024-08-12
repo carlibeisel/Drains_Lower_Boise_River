@@ -164,6 +164,7 @@ change_et <- epreddraws %>%
                        diff(unscale_et_in, lag = 30)))
 mean(change_et$differ_pred, na.rm = T)
 
+
 ## TEMP EFFECT ####
 
 simdata = rf %>%
@@ -214,6 +215,7 @@ change_temp <- epreddraws%>%
                        diff(unscale.temp, lag = 22))) 
 
 mean(change_temp$diff_pred, na.rm = T)
+
 
 ## IRRIGATION CHANGE EFFECT ####
 
@@ -266,7 +268,8 @@ change_pivot <- epreddraws%>%
 
 mean(change_pivot$diff_pred, na.rm = T)
 
-## CARRYOVER EFFECT ####
+
+## RESERVOIR CARRYOVER EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_wy_prcp = mean(scale_wy_prcp),
@@ -316,7 +319,10 @@ change_carryover <- epreddraws%>%
 
 mean(change_carryover$diff_pred, na.rm = T)
 
-## UBRB Precip EFFECT ####
+
+
+## UBRB PRECIP EFFECT ####
+
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_wy_prcp = mean(scale_wy_prcp),
@@ -467,7 +473,7 @@ mean(change_canal$diff_pred, na.rm = T)
 ## -------------------------------------------------##
 
 
-## PRECIP POSTERIOR MAS  ##
+## PRECIP POSTERIOR MASS  ##
 
 posterior <-as.data.frame(arma_ng)
 
