@@ -27,7 +27,7 @@ unscale <- function(x, orig){
 }  
 
 ## Import data ####
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0707.csv')  
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0811.csv')  
 arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
 
 # Check out model summary 
@@ -66,7 +66,8 @@ new = rf %>%
             scale_wy_prcp = mean(scale_wy_prcp), 
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
-            scale_ubrb_prcp = mean(scale_ubrb_prcp))
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            pivot_prop = pivot_prop) #correct writing? CHECK 
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
