@@ -57,6 +57,11 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
        width = 5,
        height = 4)
 
+## -------------------------------------------------##
+##          Marginal Effect Figures                 ##
+#        ex: file name . .. variable_marg.jpg       #
+## -------------------------------------------------##
+
 ## URBAN EFFECT ####
 ## Step 1: Create data to generate the predictions over a continuous range of values:
 
@@ -108,54 +113,6 @@ change_urb <- epreddraws %>%
                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA, diff(avg, lag = 21)),
          differ_urb = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA,
                         NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA, diff(unscale.urban, lag = 21)))
-
-
-## PRECIP POSTERIOR MASS ####
-
-posterior <-as.data.frame(arma_ng)
-
-ggplot(posterior, aes(x = b_scale_wy_prcp,
-                      fill = stat(x < 0))) +
-  stat_halfeye() +
-  scale_fill_manual(values=c( "grey50", "#20a198"))+
-  geom_vline(aes(xintercept=0), 
-             color="black", size=1, linetype="dashed")+
-  ylab("Density") +
-  xlab('Effect of Water Year Precipitation')+
-  guides(fill="none") + 
-  theme_bw() +
-  theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
-       width = 4,
-       height = 4,
-       units = 'in')
-
-length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
-
-## UBRB PRECIP POSTERIOR MASS ####
-
-posterior <-as.data.frame(arma_ng)
-
-ggplot(posterior, aes(x = b_scale_ubrb_prcp,
-                      fill = stat(x < 0))) +
-  stat_halfeye() +
-  scale_fill_manual(values=c( "grey50", "#20a198"))+
-  geom_vline(aes(xintercept=0), 
-             color="black", size=1, linetype="dashed")+
-  ylab("Density") +
-  xlab('Effect of UBRB Water Year Precipitation')+
-  guides(fill="none") + 
-  theme_bw() +
-  theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_ubrb_prcp), linetype = 'dotted')
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_postmass.jpg', 
-       width = 4,
-       height = 4,
-       units = 'in')
-
-length(which(posterior$b_scale_ubrb_prcp < 0))/nrow(posterior) 
-
 
 ## ET EFFECT ####
 
@@ -277,11 +234,11 @@ epreddraws <-  add_epred_draws(arma_ng,
                                re_formula=NA
 )
 epreddraws$unscale.pivot <- (unscale(epreddraws$scale_pivot_prop,
-                                    rf$pivot_prop) * 9/5) +32
+                                     rf$pivot_prop) * 9/5) +32
 
 
 pivot <- ggplot(data=epreddraws, 
-               aes(x = unscale.pivot, y = exp(.epred))) +
+                aes(x = unscale.pivot, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
@@ -304,79 +261,10 @@ change_pivot <- epreddraws%>%
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        diff(avg, lag = 22)),
          diff_pivot = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
-                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
-                       diff(unscale.pivot, lag = 22))) 
+                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                        diff(unscale.pivot, lag = 22))) 
 
 mean(change_pivot$diff_pred, na.rm = T)
-
-## Irrigation Change POSTERIOR MASS ####
-
-posterior <-as.data.frame(arma_ng)
-
-ggplot(posterior, aes(x = b_scale_pivot_prop,
-                      fill = stat(x < 0))) +
-  stat_halfeye() +
-  scale_fill_manual(values=c( "grey50", "#20a198"))+
-  geom_vline(aes(xintercept=0), 
-             color="black", size=1, linetype="dashed")+
-  ylab("Density") +
-  xlab('Effect of Irrigation Change')+
-  guides(fill="none") + 
-  theme_bw() +
-  theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_pivot_prop), linetype = 'dotted')
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/pivot_postmass.jpg', 
-       width = 4,
-       height = 4,
-       units = 'in')
-
-length(which(posterior$b_scale_pivot_prop < 0))/nrow(posterior) 
-
-## PRECIP POSTERIOR MASS ####
-
-posterior <-as.data.frame(arma_ng)
-
-ggplot(posterior, aes(x = b_scale_wy_prcp,
-                      fill = stat(x < 0))) +
-  stat_halfeye() +
-  scale_fill_manual(values=c( "grey50", "#20a198"))+
-  geom_vline(aes(xintercept=0), 
-             color="black", size=1, linetype="dashed")+
-  ylab("Density") +
-  xlab('Effect of Water Year Precipitation')+
-  guides(fill="none") + 
-  theme_bw() +
-  theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
-       width = 4,
-       height = 4,
-       units = 'in')
-
-length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
-
-## RESERVOIR CARRYOVER POSTERIOR MASS ####
-
-posterior <-as.data.frame(arma_ng)
-
-ggplot(posterior, aes(x = b_scale_Carryover,
-                      fill = stat(x < 0))) +
-  stat_halfeye() +
-  scale_fill_manual(values=c( "grey50", "#20a198"))+
-  geom_vline(aes(xintercept=0), 
-             color="black", size=1, linetype="dashed")+
-  ylab("Density") +
-  xlab('Effect of Reservoir Annual Carryover')+
-  guides(fill="none") + 
-  theme_bw() +
-  theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_Carryover), linetype = 'dotted')
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/carryover_postmass.jpg', 
-       width = 4,
-       height = 4,
-       units = 'in')
-
-length(which(posterior$b_scale_Carryover < 0))/nrow(posterior) 
 
 ## CARRYOVER EFFECT ####
 simdata = rf %>%
@@ -396,11 +284,11 @@ epreddraws <-  add_epred_draws(arma_ng,
                                re_formula=NA
 )
 epreddraws$unscale.Carryover <- (unscale(epreddraws$scale_Carryover,
-                                      rf$carryover))* 0.03937
+                                         rf$carryover))* 0.03937
 
 
 carryover <- ggplot(data=epreddraws, 
-                      aes(x = unscale.Carryover, y = exp(.epred))) +
+                    aes(x = unscale.Carryover, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
@@ -446,11 +334,11 @@ epreddraws <-  add_epred_draws(arma_ng,
                                re_formula=NA
 )
 epreddraws$unscale.precip <- (unscale(epreddraws$scale_ubrb_prcp,
-                                    rf$ubrb_prcp))* 0.03937
+                                      rf$ubrb_prcp))* 0.03937
 
 
 ubrb_precip <- ggplot(data=epreddraws, 
-               aes(x = unscale.ubrb_precip, y = exp(.epred))) +
+                      aes(x = unscale.ubrb_precip, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
@@ -572,6 +460,128 @@ change_canal <- epreddraws%>%
   mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, diff(avg, lag = 8)),
          diff_flow = c(NA, NA, NA, NA, NA, NA, NA, NA, diff(unscale.canal, lag = 8)))
 mean(change_canal$diff_pred, na.rm = T)
+
+## -------------------------------------------------##
+##          Posterior Mass Figures                  ##
+#    ex: file name . .. variable_postmass.jpg       #
+## -------------------------------------------------##
+
+
+## PRECIP POSTERIOR MAS  ##
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_wy_prcp,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of Water Year Precipitation')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
+
+## UBRB PRECIP POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_ubrb_prcp,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of UBRB Water Year Precipitation')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_ubrb_prcp), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_ubrb_prcp < 0))/nrow(posterior) 
+
+
+## Irrigation Change POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_pivot_prop,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of Irrigation Change')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_pivot_prop), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/pivot_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_pivot_prop < 0))/nrow(posterior) 
+
+## PRECIP POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_wy_prcp,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of Water Year Precipitation')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
+
+## RESERVOIR CARRYOVER POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_Carryover,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of Reservoir Annual Carryover')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_Carryover), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/carryover_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_Carryover < 0))/nrow(posterior) 
 
 ## Creating figures with ARMA terms ####
 
