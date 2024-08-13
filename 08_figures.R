@@ -72,8 +72,7 @@ new = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover)) 
+            scale_pivot_prop = mean(scale_pivot_prop)) 
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
