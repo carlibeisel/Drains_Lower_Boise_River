@@ -754,7 +754,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp, canal, precip, pivot, carryover, ncol=3, nrow = 3, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G'))
+ggarrange(urban, et, temp, canal, precip, pivot, Carryover, ncol=3, nrow = 3, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
