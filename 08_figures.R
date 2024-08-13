@@ -27,7 +27,7 @@ unscale <- function(x, orig){
 }  
 
 ## Import data ####
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0811.csv')  
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0813.csv')  
 arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
 
 # Check out model summary 
@@ -72,7 +72,8 @@ new = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop)) 
+            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_Carryover = mean(scale_Carryover)) 
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
@@ -286,10 +287,10 @@ epreddraws <-  add_epred_draws(arma_ng,
                                re_formula=NA
 )
 epreddraws$unscale.Carryover <- (unscale(epreddraws$scale_Carryover,
-                                         rf$carryover))* 0.03937
+                                         rf$Carryover))
 
 
-carryover <- ggplot(data=epreddraws, 
+Carryover <- ggplot(data=epreddraws, 
                     aes(x = unscale.Carryover, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
@@ -299,22 +300,22 @@ carryover <- ggplot(data=epreddraws,
   theme(text = element_text(size = 13)) + 
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(1000, 40000))
-ubrb_precip
+Carryover
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/carryover_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
 change_carryover <- epreddraws%>%
-  select(unscale.carryover, .epred) %>%
-  group_by(unscale.carryover) %>%
+  select(unscale.Carryover, .epred) %>%
+  group_by(unscale.Carryover) %>%
   summarize(avg = mean(exp(.epred))) %>%
   mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        diff(avg, lag = 22)),
          diff_temp = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
-                       diff(unscale.carryover, lag = 22))) 
+                       diff(unscale.Carryover, lag = 22))) 
 
 mean(change_carryover$diff_pred, na.rm = T)
 
@@ -338,38 +339,39 @@ epreddraws <-  add_epred_draws(arma_ng,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.precip <- (unscale(epreddraws$scale_ubrb_prcp,
+epreddraws$unscale.ubrb_prcp <- (unscale(epreddraws$scale_ubrb_prcp,
                                       rf$ubrb_prcp))* 0.03937
 
 
-ubrb_precip <- ggplot(data=epreddraws, 
-                      aes(x = unscale.ubrb_precip, y = exp(.epred))) +
+ubrb_prcp <- ggplot(data=epreddraws, 
+                 aes(x = unscale.ubrb_prcp, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. UBRB Water Year Precip (in)")  +
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("UBRB Water Year Precip (in)")  +
   theme_bw() +
   theme(text = element_text(size = 13)) + 
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(1000, 40000))
-ubrb_precip
+ubrb_prcp
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/ubrb_prcp_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-change_ubrb_precip <- epreddraws%>%
-  select(unscale.ubrb_precip, .epred) %>%
-  group_by(unscale.ubrb_precip) %>%
+change_ubrb_prcp <- epreddraws%>%
+  select(unscale.ubrb_prcp, .epred) %>%
+  group_by(unscale.ubrb_prcp) %>%
   summarize(avg = mean(exp(.epred))) %>%
   mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        diff(avg, lag = 22)),
          diff_temp = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
-                       diff(unscale.ubrb_precip, lag = 22))) 
+                       diff(unscale.ubrb_prcp, lag = 22))) 
 
-mean(change_ubrb_precip$diff_pred, na.rm = T)
+mean(change_ubrb_prcp$diff_pred, na.rm = T)
+
 
 ## PRECIP EFFECT ####
 simdata = rf %>%
