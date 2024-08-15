@@ -73,7 +73,8 @@ new = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = mean(scale_decreed_year)) 
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr)) 
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
@@ -85,10 +86,6 @@ epreddraws <-  add_epred_draws(arma_ng,
 )
 
 ##Step 3: Plot the data
-
-epreddraws$unscale.urban <- unscale(epreddraws$scale_class1_urban, rf$class1_urban)
-
-
 urban <- ggplot(data=epreddraws,
                 aes(x = unscale.urban, y = exp(.epred))) +
   stat_lineribbon(
@@ -124,7 +121,8 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = mean(scale_decreed_year))
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 epreddraws <-  add_epred_draws(arma_ng, 
                                newdata=simdata,
@@ -175,7 +173,8 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = mean(scale_decreed_year))
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -227,7 +226,8 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = seq_range(scale_pivot_prop, n = 200),
-            scale_decreed_year = mean(scale_decreed_year))
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -269,7 +269,7 @@ change_pivot <- epreddraws%>%
 mean(change_pivot$diff_pred, na.rm = T)
 
 
-## Decreed YEAR EFFECT ####
+## WATER RIGHT EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_wy_prcp = mean(scale_wy_prcp),
@@ -278,7 +278,8 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = seq_range(scale_decreed_year, n=200))
+            scale_sw_wr = seq_range(scale_sw_wr, n=200),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -286,12 +287,12 @@ epreddraws <-  add_epred_draws(arma_ng,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.decreed_year <- (unscale(epreddraws$scale_decreed_year,
-                                         rf$decreed_year))
+epreddraws$unscale.sw_wr <- (unscale(epreddraws$scale_sw_wr,
+                                         rf$sw_wr))
 
 
-decreed_year <- ggplot(data=epreddraws, 
-                    aes(x = unscale.decreed_year, y = exp(.epred))) +
+sw_wr <- ggplot(data=epreddraws, 
+                    aes(x = unscale.sw_wr, y = exp(.epred))) +
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
@@ -300,24 +301,24 @@ decreed_year <- ggplot(data=epreddraws,
   theme(text = element_text(size = 13)) + 
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(1000, 40000))
-decreed_year
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/decreed_year.jpg', 
+sw_wr
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/sw_wr.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-change_decreed_year <- epreddraws%>%
-  select(unscale.decreed_year, .epred) %>%
-  group_by(unscale.decreed_year) %>%
+change_sw_wr <- epreddraws%>%
+  select(unscale.sw_wr, .epred) %>%
+  group_by(unscale.sw_wr) %>%
   summarize(avg = mean(exp(.epred))) %>%
   mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        diff(avg, lag = 22)),
          diff_temp = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
-                       diff(unscale.decreed_year, lag = 22))) 
+                       diff(unscale.sw_wr, lag = 22))) 
 
-mean(change_decreed_year$diff_pred, na.rm = T)
+mean(change_sw_wr$diff_pred, na.rm = T)
 
 
 
@@ -331,7 +332,8 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = mean(scale_decreed_year))
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -382,7 +384,8 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = mean(scale_decreed_year))
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -433,7 +436,8 @@ simdata = rf %>%
             scale_DivFlow = seq_range(scale_DivFlow, n=200),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_decreed_year = mean(scale_decreed_year))
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = mean(scale_gw_wr))
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -571,7 +575,7 @@ length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior)
 
 posterior <-as.data.frame(arma_ng)
 
-ggplot(posterior, aes(x = b_scale_decreed_year,
+ggplot(posterior, aes(x = b_scale_sw_wr,
                       fill = stat(x < 0))) +
   stat_halfeye() +
   scale_fill_manual(values=c( "grey50", "#20a198"))+
@@ -582,13 +586,13 @@ ggplot(posterior, aes(x = b_scale_decreed_year,
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_decreed_year), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_sw_wr), linetype = 'dotted')
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/water_rights_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-length(which(posterior$b_scale_decreed_year < 0))/nrow(posterior) 
+length(which(posterior$b_scale_sw_wr < 0))/nrow(posterior) 
 
 ## Creating figures with ARMA terms ####
 
@@ -683,7 +687,8 @@ mcmc_plot(arma_ng,
                        'b_scale_DivFlow',
                        'b_scale_ubrb_prcp',
                        'b_scale_pivot_prop',
-                       'b_scale_decreed_year'),
+                       'b_scale_sw_wr',
+                       'b_scale_gw_wr'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
@@ -694,7 +699,8 @@ mcmc_plot(arma_ng,
                               'Canal Flows',
                               'UBRB Water Year Precip',
                               'Pivot Irrigation Proportion',
-                              'Water Rights')) +
+                              'SW Water Rights',
+                              'GW Water Rights')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
@@ -754,7 +760,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp, canal, precip, pivot, decreed_year, ncol=3, nrow = 3, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G'))
+ggarrange(urban, et, temp, canal, precip, pivot, sw_wr, gw_wr, ncol=3, nrow = 3, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,

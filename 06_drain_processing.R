@@ -120,6 +120,7 @@ pal <- paletteer_d("colorBlindness::paletteMartin")
 pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/regress.pdf',
     width=8,
     height=5)
+
 ggplot(data = data) +
   aes(x = class1_urban, y = Sum_AF, fill = Name, color=Name) +
   geom_point() + 
@@ -261,8 +262,9 @@ col_name <- c('ant_prcp',
               'Carryover',
               'LP_inflows',
               'Max_Fill',
-              'priority_year',
-              'decreed_year')
+              'gw_wr',
+              'sw_wr',
+              'total_wr')
 
 for (i in col_name) {
   name <- colnames(data[i])
@@ -286,8 +288,8 @@ mean(data$scale_pivot_prop)
 sd(data$scale_pivot_prop)
 mean(data$scale_Carryover)
 sd(data$scale_Carryover)
-mean(data$scale_priority_year)
-sd(data$scale_priority_year)
+mean(data$scale_total_wr)
+sd(data$scale_total_wr)
 
 ## Add canal discharge as a predictor variable and standardize ####
 
