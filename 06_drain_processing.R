@@ -162,6 +162,17 @@ ggplot(data = data) +
   ylim(0, 120000)
 dev.off()
 
+#Simpler version of above if it won't run because too complex? 
+# ggplot(data = data) +
+#   aes(x = class1_urban, y = Sum_AF) +
+#   geom_point() +
+#   geom_smooth(method = 'lm') +
+#   theme_bw() +
+#   xlab('Urban Proportion') + 
+#   ylab('Discharge (AF)') +
+#   ylim(0, 120000)
+#
+
 ggplot(data = data) +
   aes(x = Year, y = Sum_AF, fill = Name, color=Name) +
   geom_point() + 
@@ -243,6 +254,7 @@ ggplot(data = displaydat) +
   ylim(0, 80000)
 dev.off()
 
+
 # Scale all the variables for model input
 scale2sd <- function(x){
   (x - mean(x))/(sd(x)*2)
@@ -300,9 +312,9 @@ spatial_dict_drain <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower
 spatial_dict_drain <- subset(spatial_dict_drain, select = -c(Dataset, SiteID))
 spatial_dict_drain <- na.omit(spatial_dict_drain)
 relates <- dplyr::left_join(relates, spatial_dict, by =('WaterRight' = 'WaterRight') )
-
 years <- data.frame(divflows$Year, divflows$Acre_feet, divflows$Name)
-years <- dplyr::left_join(years, relates, by = c('divflows.Name' = 'NewName'))
+#years <- dplyr::left_join(years, relates, by = c('divflows.Name' = 'NewName')) #old version
+years <- dplyr::left_join(years, relates, by = c("divflows.Name" = "NewName"), relationship = "many-to-many")
 years <- subset(years, select = -c(WaterRight))
 years <- na.omit(years)
 years <- dplyr::left_join(years, spatial_dict_drain, by = c('Name' = 'Spatial.Name'))
@@ -332,7 +344,8 @@ avgs <- data %>%
 ## Perform Mann Kendall Test for each drain
 rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0815.csv')
 
-names <- data.frame(unique(rf$Name))
+#names <- data.frame(unique(rf$Name)) # old, replaced with below
+names <- unique(rf$Name)
 
 for (i in names){
   data <- subset(rf, Name == i)
@@ -379,16 +392,38 @@ change_plots <- function(dataframe, name){
 myplots <- list()
 values <- list()
 change <- list()
-for (i in change_names){
+
+# #old, replaced with below
+# for (i in change_names){
+#   p <- change_plots(subset(rf, Name == i), i)
+#   vals <- ggplot_build(p)
+#   vals <- vals$data[[2]]
+#   values[[i]] <- vals
+#   print(c(i, 'Percent Decrease:', ((max(vals$y) - min(vals$y))/max(vals$y))))
+#   print(c(i, '1987 Value:', (max(vals$y)), max(vals$y)-vals$ymin[1]))
+#   print(c(i, '2020 Value:', (min(vals$y)), min(vals$y)-vals$ymin[80]))
+#   change[[i]] <- max(vals$y)-min(vals$y)
+#   myplots[[i]] <- p
+# }
+# #
+
+for (i in change_names) {
   p <- change_plots(subset(rf, Name == i), i)
-  vals <- ggplot_build(p)
-  vals <- vals$data[[2]]
-  values[[i]] <- vals
-  print(c(i, 'Percent Decrease:', ((max(vals$y) - min(vals$y))/max(vals$y))))
-  print(c(i, '1987 Value:', (max(vals$y)), max(vals$y)-vals$ymin[1]))
-  print(c(i, '2020 Value:', (min(vals$y)), min(vals$y)-vals$ymin[80]))
-  change[[i]] <- max(vals$y)-min(vals$y)
-  myplots[[i]] <- p
+  vals <- ggplot_build(p)$data[[2]]  # Ensure this index is correct
+  # Filter out non-finite values from vals
+  vals <- vals[is.finite(vals$y) & is.finite(vals$ymin), ]
+  
+  if(nrow(vals) > 0) {  # Check if there are any rows left after filtering
+    values[[i]] <- vals
+    percent_decrease <- (max(vals$y) - min(vals$y)) / max(vals$y)
+    print(c(i, 'Percent Decrease:', percent_decrease))
+    print(c(i, '1987 Value:', max(vals$y), max(vals$y) - vals$ymin[1]))
+    print(c(i, '2020 Value:', min(vals$y), min(vals$y) - vals$ymin[nrow(vals)]))
+    change[[i]] <- max(vals$y) - min(vals$y)
+    myplots[[i]] <- p
+  } else {
+    print(paste(i, "contains only non-finite values in 'y'."))
+  }
 }
 
 change <- data.frame(change)
