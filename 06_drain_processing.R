@@ -61,7 +61,6 @@ dev.off()
 pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/SD_AF_hist.pdf',
     width=6,
     height=4)
-
 ggplot(data=data)+
   aes(x=SD_AF)+
   geom_histogram(color='black', binwidth = 5000)+
@@ -87,20 +86,21 @@ names <- unique(data$Name)
 
 for (i in names){
   subdata <- subset(data, Name == i)
-  model <- lm(Sum_AF ~ Year, data = subdata)   
-  slope <- coef (model)[2]  
-  r_squared <- summary(model)$r.squared  
-  plot_title <- paste (i, "\nSlope:", round(slope,2), "R-squared:",round(r_squared, 2))   
- 
-   print(ggplot(data = subdata) + 
+  model <- lm(Sum_AF ~ Year, data = subdata)
+  slope <- coef (model)[2]
+  r_squared <- summary(model)$r.squared
+  plot_title <- paste (i, "\nSlope:", round(slope,2), "R-squared:",round(r_squared, 2))
+
+   print(ggplot(data = subdata) +
           aes(x = Year, y = Sum_AF) +
-          geom_point() + 
+          geom_point() +
           geom_smooth(method = 'lm') +
           theme_bw() +
-          xlab('Year') + 
-          ylab('Discharge (AF)') + 
-          ggtitle(plot_title))   
+          xlab('Year') +
+          ylab('Discharge (AF)') +
+          ggtitle(plot_title))
 }
+
 
 for (i in names){
   subdata <- subset(data, Name == i)
