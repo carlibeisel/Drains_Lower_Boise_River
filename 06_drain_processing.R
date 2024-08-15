@@ -52,7 +52,7 @@ pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_out
     height=4)
 ggplot(data=data)+
   aes(x=Sum_AF)+
-  geom_histogram(color='black')+
+  geom_histogram(color='black', binwidth = 5000)+
   ylab('Count')+
   xlab('Annual Discharge (AF/yr)')+
   theme_bw()
@@ -61,9 +61,10 @@ dev.off()
 pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/SD_AF_hist.pdf',
     width=6,
     height=4)
+
 ggplot(data=data)+
   aes(x=SD_AF)+
-  geom_histogram(color='black')+
+  geom_histogram(color='black', binwidth = 5000)+
   ylab('Count')+
   xlab('Annual Discharge (AF/yr)')+
   theme_bw()
@@ -123,7 +124,7 @@ pdf(file='/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_out
 
 ggplot(data = data) +
   aes(x = class1_urban, y = Sum_AF, fill = Name, color=Name) +
-  geom_point() + 
+  geom_point() +
   scale_shape(solid = FALSE) +
   geom_smooth(method = 'lm', aes(color = Name, fill = Name)) +
   scale_fill_manual(values =c('#000000FF',
@@ -157,21 +158,10 @@ ggplot(data = data) +
                                '#31A354',
                                '#FFAD65FF'))+
   theme_bw() +
-  xlab('Urban Proportion') + 
+  xlab('Urban Proportion') +
   ylab('Discharge (AF)') +
   ylim(0, 120000)
 dev.off()
-
-#Simpler version of above if it won't run because too complex? 
-# ggplot(data = data) +
-#   aes(x = class1_urban, y = Sum_AF) +
-#   geom_point() +
-#   geom_smooth(method = 'lm') +
-#   theme_bw() +
-#   xlab('Urban Proportion') + 
-#   ylab('Discharge (AF)') +
-#   ylim(0, 120000)
-#
 
 ggplot(data = data) +
   aes(x = Year, y = Sum_AF, fill = Name, color=Name) +
