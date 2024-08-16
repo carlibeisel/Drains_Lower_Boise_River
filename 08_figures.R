@@ -86,6 +86,9 @@ epreddraws <-  add_epred_draws(arma_ng,
 )
 
 ##Step 3: Plot the data
+
+epreddraws$unscale.urban <- unscale(epreddraws$scale_class1_urban, rf$class1_urban)
+
 urban <- ggplot(data=epreddraws,
                 aes(x = unscale.urban, y = exp(.epred))) +
   stat_lineribbon(
@@ -269,7 +272,7 @@ change_pivot <- epreddraws%>%
 mean(change_pivot$diff_pred, na.rm = T)
 
 
-## WATER RIGHT EFFECT ####
+## SW WATER RIGHT EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_wy_prcp = mean(scale_wy_prcp),
@@ -296,13 +299,13 @@ sw_wr <- ggplot(data=epreddraws,
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Water Rights")  +
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("SW Water Rights")  +
   theme_bw() +
   theme(text = element_text(size = 13)) + 
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(1000, 40000))
 sw_wr
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/sw_wr.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/sw_wr_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -314,12 +317,62 @@ change_sw_wr <- epreddraws%>%
   mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        diff(avg, lag = 22)),
-         diff_temp = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+         diff_sw_wr = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
                        diff(unscale.sw_wr, lag = 22))) 
 
 mean(change_sw_wr$diff_pred, na.rm = T)
 
+## GW WATER RIGHT EFFECT ####
+simdata = rf %>%
+  data_grid(scale_class1_urban = mean(scale_class1_urban),
+            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_temp = mean(scale_irrig_temp),
+            scale_et = mean(scale_et),
+            scale_DivFlow = mean(scale_DivFlow),
+            scale_ubrb_prcp = mean(scale_ubrb_prcp),
+            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_sw_wr = mean(scale_sw_wr),
+            scale_gw_wr = seq_range(scale_gw_wr, n=200))
+simdata$Name <- NA
+
+epreddraws <-  add_epred_draws(arma_ng, 
+                               newdata=simdata,
+                               ndraws=1000,
+                               re_formula=NA
+)
+epreddraws$unscale.gw_wr <- (unscale(epreddraws$scale_gw_wr,
+                                     rf$gw_wr))
+
+
+gw_wr <- ggplot(data=epreddraws, 
+                aes(x = unscale.gw_wr, y = exp(.epred))) +
+  stat_lineribbon(
+    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    color="black", size=2) + 
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("GW Water Rights")  +
+  theme_bw() +
+  theme(text = element_text(size = 13)) + 
+  scale_y_continuous(labels = scales::comma)+
+  coord_cartesian(ylim = c(1000, 40000))
+gw_wr
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/gw_wr_marg.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+change_gw_wr <- epreddraws%>%
+  select(unscale.gw_wr, .epred) %>%
+  group_by(unscale.gw_wr) %>%
+  summarize(avg = mean(exp(.epred))) %>%
+  mutate(diff_pred = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(avg, lag = 22)),
+         diff_gw_wr = c(NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       NA, NA, NA, NA, NA, NA, NA, NA, NA , NA, NA,
+                       diff(unscale.gw_wr, lag = 22))) 
+
+mean(change_gw_wr$diff_pred, na.rm = T)
 
 
 ## UBRB PRECIP EFFECT ####
@@ -571,7 +624,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
 
-## WATER RIGHTS POSTERIOR MASS ####
+## SW WATER RIGHTS POSTERIOR MASS ####
 
 posterior <-as.data.frame(arma_ng)
 
@@ -582,17 +635,40 @@ ggplot(posterior, aes(x = b_scale_sw_wr,
   geom_vline(aes(xintercept=0), 
              color="black", size=1, linetype="dashed")+
   ylab("Density") +
-  xlab('Effect of Water Rights')+
+  xlab('Effect of SW Water Rights')+
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
   geom_vline(xintercept = median(posterior$b_scale_sw_wr), linetype = 'dotted')
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/water_rights_postmass.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/sw_wr_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
 length(which(posterior$b_scale_sw_wr < 0))/nrow(posterior) 
+
+## GW WATER RIGHTS POSTERIOR MASS ####
+
+posterior <-as.data.frame(arma_ng)
+
+ggplot(posterior, aes(x = b_scale_gw_wr,
+                      fill = stat(x < 0))) +
+  stat_halfeye() +
+  scale_fill_manual(values=c( "grey50", "#20a198"))+
+  geom_vline(aes(xintercept=0), 
+             color="black", size=1, linetype="dashed")+
+  ylab("Density") +
+  xlab('Effect of GW Water Rights')+
+  guides(fill="none") + 
+  theme_bw() +
+  theme(text = element_text(size = 18)) +
+  geom_vline(xintercept = median(posterior$b_scale_gw_wr), linetype = 'dotted')
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/gw_wr_postmass.jpg', 
+       width = 4,
+       height = 4,
+       units = 'in')
+
+length(which(posterior$b_scale_gw_wr < 0))/nrow(posterior) 
 
 ## Creating figures with ARMA terms ####
 
