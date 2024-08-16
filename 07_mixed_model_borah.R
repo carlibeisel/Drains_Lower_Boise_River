@@ -99,7 +99,9 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover')
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
 )
 # 
 # # ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
@@ -128,7 +130,7 @@ priors <- c(
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_sw_wr + scale_gw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_wy_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
