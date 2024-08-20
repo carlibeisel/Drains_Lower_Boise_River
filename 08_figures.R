@@ -68,7 +68,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 new = rf %>%
   data_grid(scale_class1_urban = seq_range(scale_class1_urban, n = 200),
             scale_et = mean(scale_et),
-            scale_wy_prcp = mean(scale_wy_prcp), 
+            scale_irrig_prcp = mean(scale_irrig_prcp), 
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
@@ -119,7 +119,7 @@ change_urb <- epreddraws %>%
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = seq_range(scale_et, n=200),
             scale_DivFlow = mean(scale_DivFlow),
@@ -172,7 +172,7 @@ mean(change_et$differ_pred, na.rm = T)
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = seq_range(scale_irrig_temp, n=200),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -226,7 +226,7 @@ mean(change_temp$diff_pred, na.rm = T)
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -278,7 +278,7 @@ mean(change_pivot$diff_pred, na.rm = T)
 ## CARRYOVER EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -329,7 +329,7 @@ mean(change_Carryover$diff_pred, na.rm = T)
 ## SW WATER RIGHT EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -381,7 +381,7 @@ mean(change_sw_wr$diff_pred, na.rm = T)
 ## GW WATER RIGHT EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -435,7 +435,7 @@ mean(change_gw_wr$diff_pred, na.rm = T)
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -488,7 +488,7 @@ mean(change_ubrb_prcp$diff_pred, na.rm = T)
 ## PRECIP EFFECT ####
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = seq_range(scale_wy_prcp, n=200),
+            scale_irrig_prcp = seq_range(scale_irrig_prcp, n=200),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
@@ -504,8 +504,8 @@ epreddraws <-  add_epred_draws(arma_ng,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.precip <- (unscale(epreddraws$scale_wy_prcp,
-                                      rf$wy_prcp))* 0.03937
+epreddraws$unscale.precip <- (unscale(epreddraws$scale_irrig_prcp,
+                                      rf$irrig_prcp))* 0.03937
 
 
 precip <- ggplot(data=epreddraws, 
@@ -513,13 +513,13 @@ precip <- ggplot(data=epreddraws,
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Water Year Precip (in)")  +
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Irrigation Season Precip (in)")  +
   theme_bw() +
   theme(text = element_text(size = 13)) + 
   scale_y_continuous(labels = scales::comma)+
   coord_cartesian(ylim = c(1000, 40000))
 precip
-ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/wy_prcp_marg.jpg', 
+ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/irrig_prcp_marg.jpg', 
        width = 4,
        height = 4,
        units = 'in')
@@ -541,7 +541,7 @@ mean(change_precip$diff_pred, na.rm = T)
 
 simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_et = mean(scale_et),
             scale_DivFlow = seq_range(scale_DivFlow, n=200),
@@ -594,24 +594,24 @@ mean(change_canal$diff_pred, na.rm = T)
 
 posterior <-as.data.frame(arma_ng)
 
-ggplot(posterior, aes(x = b_scale_wy_prcp,
+ggplot(posterior, aes(x = b_scale_irrig_prcp,
                       fill = stat(x < 0))) +
   stat_halfeye() +
   scale_fill_manual(values=c( "grey50", "#20a198"))+
   geom_vline(aes(xintercept=0), 
              color="black", size=1, linetype="dashed")+
   ylab("Density") +
-  xlab('Effect of Water Year Precipitation')+
+  xlab('Effect of Irrigation Season Precipitation')+
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_irrig_prcp), linetype = 'dotted')
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
+length(which(posterior$b_scale_irrig_prcp < 0))/nrow(posterior) 
 
 ## UBRB PRECIP POSTERIOR MASS ####
 
@@ -664,24 +664,24 @@ length(which(posterior$b_scale_pivot_prop < 0))/nrow(posterior)
 
 posterior <-as.data.frame(arma_ng)
 
-ggplot(posterior, aes(x = b_scale_wy_prcp,
+ggplot(posterior, aes(x = b_scale_irrig_prcp,
                       fill = stat(x < 0))) +
   stat_halfeye() +
   scale_fill_manual(values=c( "grey50", "#20a198"))+
   geom_vline(aes(xintercept=0), 
              color="black", size=1, linetype="dashed")+
   ylab("Density") +
-  xlab('Effect of Water Year Precipitation')+
+  xlab('Effect of Irrigaiton Season Precipitation')+
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_irrig_prcp), linetype = 'dotted')
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/prcp_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-length(which(posterior$b_scale_wy_prcp < 0))/nrow(posterior) 
+length(which(posterior$b_scale_irrig_prcp < 0))/nrow(posterior) 
 
 ## CARRYOVER POSTERIOR MASS ####
 
@@ -758,7 +758,7 @@ new = rf %>%
   group_by(Name) %>%
   data_grid(scale_class1_urban = seq_range(scale_class1_urban, n = 200),
             et = mean(et),
-            scale_wy_prcp = mean(scale_wy_prcp),
+            scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow))
 #lt.auto_noyear file from above
@@ -818,14 +818,14 @@ print(colnames(arma_ng))
 mcmc_plot(arma_ng,
           type = 'areas',
           variable = c('b_scale_et',
-                       'b_scale_wy_prcp', 
+                       'b_scale_irrig_prcp', 
                        'b_scale_irrig_temp',
                        'b_scale_ubrb_prcp'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
   scale_y_discrete(labels = c('Evapotranspiration',
-                              'Drainshed Water Year Precipitation',
+                              'Drainshed Irrigation Season Precipitation',
                               'Temperature', 'UBRB Water Year Precip')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
@@ -839,7 +839,7 @@ color_scheme_set('darkgray')
 mcmc_plot(arma_ng,
           type = 'areas',
           variable = c('b_scale_et',
-                       'b_scale_wy_prcp',
+                       'b_scale_irrig_prcp',
                        'b_scale_irrig_temp',
                        'b_scale_class1_urban',
                        'b_scale_DivFlow',
@@ -852,7 +852,7 @@ mcmc_plot(arma_ng,
   theme_bw() +
   vline_0() +
   scale_y_discrete(labels = c('Evapotranspiration',
-                              'Water Year Precipitation',
+                              'Irrigation Season Precipitation',
                               'Temperature',
                               'Urban Percentage',
                               'Canal Flows',
@@ -875,11 +875,11 @@ ggplot(posterior, aes(x = b_scale_class1_urban)) +
   geom_vline(aes(xintercept=0), 
              color="black", size=1, linetype="dashed")+
   ylab("Density") +
-  xlab('Effect of Precipitation')+
+  xlab('Effect of Irrigation Season Precipitation')+
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_wy_prcp), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_irrig_prcp), linetype = 'dotted')
 
 mcmc_plot(arma_ng,
           type = 'areas',
