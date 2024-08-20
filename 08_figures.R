@@ -27,7 +27,7 @@ unscale <- function(x, orig){
 }  
 
 ## Import data ####
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0815.csv')  
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0820.csv')  
 arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
 
 # Check out model summary 
