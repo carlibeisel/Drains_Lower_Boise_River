@@ -100,6 +100,7 @@ urban <- ggplot(data=epreddraws,
   theme(text = element_text(size = 12)) +
   scale_y_continuous(labels = scales::comma)
 urban
+
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/urb_marg.jpg', 
        width = 4,
        height = 4,
