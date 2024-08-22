@@ -28,7 +28,7 @@ library(loo)
 
 # Import the data 
 
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0820.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv')
 rf$lt <- log(rf$Sum_AF)
 
 ## MODEL FIT ####
@@ -130,7 +130,7 @@ priors <- c(
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_sw_wr + scale_gw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',

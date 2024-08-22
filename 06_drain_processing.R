@@ -40,7 +40,7 @@ source("http://peterhaschke.com/Code/multiplot.R")
 
 ## INPUT THE DATA ##
 ## -------------- ##
-data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0820.csv')
+data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0822.csv')
 na_data <- data[is.na(data)] # Check for NA data in the file
 data <- data[-c(1)] # Remove python index value column
 
@@ -317,7 +317,7 @@ data <- dplyr :: left_join(data, sums, by = c('Name' = 'NewName',
 
 data$scale_DivFlow <- scale2sd(data$DivFlow)
 
-write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0820.csv', row.names = FALSE)
+write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv', row.names = FALSE)
 
 ## Check correlation between variables ##
 ## Don't want a correlation above 0.4 
@@ -332,7 +332,7 @@ avgs <- data %>%
 
 
 ## Perform Mann Kendall Test for each drain
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0815.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0822.csv')
 
 #names <- data.frame(unique(rf$Name)) # old, replaced with below
 names <- unique(rf$Name)
