@@ -859,7 +859,7 @@ mcmc_plot(arma_ng,
                               'Canal Flows',
                               'UBRB Water Year Precip',
                               'Pivot Irrigation Proportion',
-                              'Reservoir Carryover'
+                              'Reservoir Carryover',
                               'SW Water Rights',
                               'GW Water Rights')) +
   xlab('Relative Effect Size (log)') +
@@ -921,7 +921,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp, canal, precip, ubrb_prcp, pivot, Carryover, gw_wr, sw_wr, ncol=5, nrow = 2, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
+ggarrange(urban, et, temp, canal, precip, ubrb_prcp, pivot, Carryover, gw_wr, sw_wr, ncol=3, nrow = 4, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
