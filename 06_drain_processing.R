@@ -303,18 +303,17 @@ spatial_dict_drain <- subset(spatial_dict_drain, select = -c(Dataset, SiteID))
 spatial_dict_drain <- na.omit(spatial_dict_drain)
 relates <- dplyr::left_join(relates, spatial_dict, by =('WaterRight' = 'WaterRight') )
 years <- data.frame(divflows$Year, divflows$Acre_feet, divflows$Name)
-#years <- dplyr::left_join(years, relates, by = c('divflows.Name' = 'NewName')) #old version
 years <- dplyr::left_join(years, relates, by = c("divflows.Name" = "NewName"), relationship = "many-to-many")
 years <- subset(years, select = -c(WaterRight))
 years <- na.omit(years)
 years <- dplyr::left_join(years, spatial_dict_drain, by = c('Name' = 'Spatial.Name'))
-sums <- years %>%
-  select(divflows.Year, divflows.Acre_feet, NewName) %>%
-  group_by(divflows.Year, NewName) %>%
-  summarize(DivFlow = sum(divflows.Acre_feet))
+
+sums <- aggregate(divflows.Acre_feet ~ divflows.Year + NewName, data = years, sum)
+colnames(sums) <- c("divflows.Year", "NewName", "DivFlow")
+sums$divflows.Year <- as.integer(as.character(sums$divflows.Year))
+
 data <- dplyr :: left_join(data, sums, by = c('Name' = 'NewName',
                                               'Year' = 'divflows.Year'))
-
 data$scale_DivFlow <- scale2sd(data$DivFlow)
 
 write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv', row.names = FALSE)
@@ -447,9 +446,8 @@ for (i in names) {
 
 rf_drop <- rf[rf$Name != 'Sand Run Gulch',]
 
-sums <- rf_drop %>%
-  group_by(Year) %>%
-  summarize(total = sum(Sum_AF))
+sums <- aggregate(Sum_AF ~ Year, data = rf_drop, sum)
+colnames(sums) <- c("Year", "total")
 
 MannKendall(sums$total)
 sum_plot <- ggplot(data = sums, aes(x = Year, y = total)) +
