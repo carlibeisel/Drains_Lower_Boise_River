@@ -13,7 +13,6 @@ library(brms)
 #install.packages('bayesplot')
 library(bayesplot)
 library(tidyverse)
-
 #install.packages('tidybayes')
 library(tidybayes)
 library(plyr)
@@ -25,6 +24,10 @@ library(ggrepel)
 library(flexmix)
 library(modelr)
 library(loo)
+#install.packages("bayestestR")
+library(bayestestR)
+#install.packages("performance")
+library(performance)
 
 # Import the data 
 
@@ -96,12 +99,12 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
 )
 # 
 # # ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
@@ -129,8 +132,8 @@ priors <- c(
 # saveRDS(loo2, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma.RDS')
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
-
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+# + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp 
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_class1_urban + scale_et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
@@ -150,6 +153,11 @@ print('MAE')
 mae_lt(rf_arma_full, rf$Sum_AF)
 
 saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
+
+# Rsquared
+r2 <- r2_bayes(rf_arma_full)
+print(r2)
+
 # saveRDS(loo3, file = /Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma_nogroup.RDS')
 
 # # ARMA model for urban and climate, no canals
