@@ -73,9 +73,9 @@ new = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 new$Name <- NA
 
 ## Step 2: generate predictions from model:
@@ -126,9 +126,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 epreddraws <-  add_epred_draws(arma_ng, 
                                newdata=simdata,
@@ -179,9 +179,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -233,9 +233,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = seq_range(scale_pivot_prop, n = 200),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -285,9 +285,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = seq_range(scale_Carryover, n=200),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = seq_range(scale_Carryover, n=200))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -442,9 +442,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -495,9 +495,9 @@ simdata = rf %>%
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -548,9 +548,9 @@ simdata = rf %>%
             scale_DivFlow = seq_range(scale_DivFlow, n=200),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_prop = mean(scale_pivot_prop),
-            scale_Carryover = mean(scale_Carryover),
-            scale_sw_wr = mean(scale_sw_wr),
-            scale_gw_wr = mean(scale_gw_wr)) 
+            scale_Carryover = mean(scale_Carryover))
+            #scale_sw_wr = mean(scale_sw_wr),
+            #scale_gw_wr = mean(scale_gw_wr)) 
 simdata$Name <- NA
 
 epreddraws <-  add_epred_draws(arma_ng, 
@@ -846,9 +846,9 @@ mcmc_plot(arma_ng,
                        'b_scale_DivFlow',
                        'b_scale_ubrb_prcp',
                        'b_scale_pivot_prop',
-                       'b_scale_Carryover',
-                       'b_scale_sw_wr',
-                       'b_scale_gw_wr'),
+                       'b_scale_Carryover'),
+                       #'b_scale_sw_wr',
+                       #'b_scale_gw_wr'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
@@ -859,9 +859,9 @@ mcmc_plot(arma_ng,
                               'Canal Flows',
                               'UBRB Water Year Precip',
                               'Pivot Irrigation Proportion',
-                              'Reservoir Carryover',
-                              'SW Water Rights',
-                              'GW Water Rights')) +
+                              'Reservoir Carryover')) +
+                              #'SW Water Rights',
+                              #'GW Water Rights')) +
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
@@ -921,7 +921,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(urban, et, temp, canal, precip, ubrb_prcp, pivot, Carryover, gw_wr, sw_wr, ncol=3, nrow = 4, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
+ggarrange(urban, et, temp, canal, precip, ubrb_prcp, pivot, Carryover, ncol=2, nrow = 4, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
