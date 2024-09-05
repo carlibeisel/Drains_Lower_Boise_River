@@ -837,11 +837,11 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
        units = 'in')
 
 # All
-# 'b_scale_et'
+
 color_scheme_set('darkgray')
 mcmc_plot(arma_ng,
           type = 'areas',
-          variable = c(
+          variable = c('b_scale_et',
                        'b_scale_irrig_prcp',
                        'b_scale_irrig_temp',
                        'b_scale_class1_urban',
@@ -922,8 +922,8 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
        units = 'in')
 
 ## Marginal effects in on plot
-# et,
-ggarrange(  temp, precip, ubrb_prcp, Carryover, canal, pivot, urban, ncol=2, nrow = 4, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
+
+ggarrange(  et, temp, precip, ubrb_prcp, Carryover, canal, pivot, urban, ncol=2, nrow = 4, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,
