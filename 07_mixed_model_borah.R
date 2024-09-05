@@ -95,7 +95,7 @@ mae_lt <- function(model, data_compare){
 priors <- c(
   set_prior('normal(2,1)', class = 'Intercept'),
   set_prior('normal(0,1)', class= 'sd'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_et'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_et'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
@@ -132,7 +132,8 @@ priors <- c(
 # saveRDS(loo2, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma.RDS')
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_et + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+# + scale_et
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
