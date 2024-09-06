@@ -72,7 +72,7 @@ new = rf %>%
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -125,7 +125,7 @@ simdata = rf %>%
             scale_et = seq_range(scale_et, n=200),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -178,7 +178,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -232,7 +232,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = seq_range(scale_pivot_prop, n = 200),
+            scale_pivot_perc = seq_range(scale_pivot_perc, n = 200),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -243,8 +243,8 @@ epreddraws <-  add_epred_draws(arma_ng,
                                ndraws=1000,
                                re_formula=NA
 )
-epreddraws$unscale.pivot <- (unscale(epreddraws$scale_pivot_prop,
-                                     rf$pivot_prop) * 9/5) +32
+epreddraws$unscale.pivot <- (unscale(epreddraws$scale_pivot_perc,
+                                     rf$pivot_perc) * 9/5) +32
 
 
 pivot <- ggplot(data=epreddraws, 
@@ -284,7 +284,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = seq_range(scale_Carryover, n=200),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -335,7 +335,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = seq_range(scale_sw_wr, n=200),
             scale_gw_wr = mean(scale_gw_wr))
@@ -387,7 +387,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = seq_range(scale_gw_wr, n=200))
@@ -441,7 +441,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -494,7 +494,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -547,7 +547,7 @@ simdata = rf %>%
             #scale_et = mean(scale_et),
             scale_DivFlow = seq_range(scale_DivFlow, n=200),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
-            scale_pivot_prop = mean(scale_pivot_prop),
+            scale_pivot_perc = mean(scale_pivot_perc),
             scale_Carryover = mean(scale_Carryover),
             scale_sw_wr = mean(scale_sw_wr),
             scale_gw_wr = mean(scale_gw_wr)) 
@@ -642,7 +642,7 @@ length(which(posterior$b_scale_ubrb_prcp < 0))/nrow(posterior)
 
 posterior <-as.data.frame(arma_ng)
 
-ggplot(posterior, aes(x = b_scale_pivot_prop,
+ggplot(posterior, aes(x = b_scale_pivot_perc,
                       fill = stat(x < 0))) +
   stat_halfeye() +
   scale_fill_manual(values=c( "grey50", "#20a198"))+
@@ -653,13 +653,13 @@ ggplot(posterior, aes(x = b_scale_pivot_prop,
   guides(fill="none") + 
   theme_bw() +
   theme(text = element_text(size = 18)) +
-  geom_vline(xintercept = median(posterior$b_scale_pivot_prop), linetype = 'dotted')
+  geom_vline(xintercept = median(posterior$b_scale_pivot_perc), linetype = 'dotted')
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/pivot_postmass.jpg', 
        width = 4,
        height = 4,
        units = 'in')
 
-length(which(posterior$b_scale_pivot_prop < 0))/nrow(posterior) 
+length(which(posterior$b_scale_pivot_perc < 0))/nrow(posterior) 
 
 ## PRECIP POSTERIOR MASS ####
 
@@ -847,7 +847,7 @@ mcmc_plot(arma_ng,
                        'b_scale_class1_urban',
                        'b_scale_DivFlow',
                        'b_scale_ubrb_prcp',
-                       'b_scale_pivot_prop',
+                       'b_scale_pivot_perc',
                        'b_scale_Carryover'),
                        #'b_scale_sw_wr',
                        #'b_scale_gw_wr'),
