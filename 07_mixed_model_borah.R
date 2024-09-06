@@ -152,3 +152,4 @@ saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_B
 # Rsquared
 r2 <- r2_bayes(rf_arma_full)
 print(r2)
+
