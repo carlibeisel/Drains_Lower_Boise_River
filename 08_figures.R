@@ -67,7 +67,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 new = rf %>%
   data_grid(scale_class1_urban = seq_range(scale_class1_urban, n = 200),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_irrig_prcp = mean(scale_irrig_prcp), 
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow),
@@ -175,7 +175,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = seq_range(scale_irrig_temp, n=200),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -229,7 +229,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = seq_range(scale_pivot_perc, n = 200),
@@ -281,7 +281,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -332,7 +332,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -384,7 +384,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -438,7 +438,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = seq_range(scale_ubrb_prcp, n=200),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -491,7 +491,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = seq_range(scale_irrig_prcp, n=200),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = mean(scale_DivFlow),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -544,7 +544,7 @@ simdata = rf %>%
   data_grid(scale_class1_urban = mean(scale_class1_urban),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
-            #scale_et = mean(scale_et),
+            scale_et = mean(scale_et),
             scale_DivFlow = seq_range(scale_DivFlow, n=200),
             scale_ubrb_prcp = mean(scale_ubrb_prcp),
             scale_pivot_perc = mean(scale_pivot_perc),
@@ -758,7 +758,7 @@ length(which(posterior$b_scale_gw_wr < 0))/nrow(posterior)
 new = rf %>%
   group_by(Name) %>%
   data_grid(scale_class1_urban = seq_range(scale_class1_urban, n = 200),
-            #et = mean(et),
+            et = mean(et),
             scale_irrig_prcp = mean(scale_irrig_prcp),
             scale_irrig_temp = mean(scale_irrig_temp),
             scale_DivFlow = mean(scale_DivFlow))
@@ -816,10 +816,10 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 ## MCMC plots ##
 print(colnames(arma_ng))
 # Climate
-# 'b_scale_et',
+
 mcmc_plot(arma_ng,
           type = 'areas',
-          variable = c(
+          variable = c('b_scale_et',
                        'b_scale_irrig_prcp', 
                        'b_scale_irrig_temp',
                        'b_scale_ubrb_prcp'),
@@ -844,13 +844,13 @@ mcmc_plot(arma_ng,
           variable = c('b_scale_et',
                        'b_scale_irrig_prcp',
                        'b_scale_irrig_temp',
-                       'b_scale_class1_urban',
-                       'b_scale_DivFlow',
                        'b_scale_ubrb_prcp',
+                       'b_scale_DivFlow',
+                       'b_scale_Carryover',
+                       'b_scale_class1_urban',
                        'b_scale_pivot_perc',
-                       'b_scale_Carryover'),
-                       #'b_scale_sw_wr',
-                       #'b_scale_gw_wr'),
+                       'b_scale_sw_wr',
+                       'b_scale_gw_wr'),
           prob = 0.95) +
   theme_bw() +
   vline_0() +
@@ -923,7 +923,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ## Marginal effects in on plot
 
-ggarrange(  et, temp, precip, ubrb_prcp, Carryover, canal, pivot, urban, ncol=2, nrow = 4, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
+ggarrange(sw_wr, gw_wr, et, temp, precip, ubrb_prcp, Carryover, canal, pivot, urban, ncol=2, nrow = 5, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
        width = 8,
        height = 8,

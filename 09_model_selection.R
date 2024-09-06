@@ -6,9 +6,7 @@
 # By: Carli Beisel
 # Sept 5, 2024
 
-# Purpose:
-
-#Notes: Tried using BIC, Didn't like it? Used LOO instead? 
+# Purpose: Using LOO to determine which model best define the system. 
 
 # Import packages:
 #install.packages('brms')
@@ -82,8 +80,6 @@ rf_arma_mod1 <- brm(lt ~ (1 | Name) + scale_et + scale_class1_urban + scale_irri
                     save_pars = save_pars(all = TRUE))
 print('Model: Autoregressive, all fixed effects')
 summary(rf_arma_mod1)
-#bic_rf_arma_mod1 <- BIC(rf_arma_mod1)
-#print(bic_rf_arma_mod1)
 # Compute LOO for the first model
 loo_rf_arma_mod1 <- loo(rf_arma_mod1)
 print(loo_rf_arma_mod1)
@@ -100,12 +96,12 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_perc'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
 )
-rf_arma_mod2 <- brm(lt ~ (1 | Name) + scale_et + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_mod2 <- brm(lt ~ (1 | Name) + scale_et + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_perc + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
@@ -116,6 +112,9 @@ rf_arma_mod2 <- brm(lt ~ (1 | Name) + scale_et + scale_gw_wr + scale_sw_wr + sca
                     save_pars = save_pars(all = TRUE))
 print('Model: Autoregressive, all fixed effects')
 summary(rf_arma_mod2)
+# Rsquared
+r2 <- r2_bayes(rf_arma_mod2)
+print(r2)
 loo_rf_arma_mod2 <- loo(rf_arma_mod2)
 print(loo_rf_arma_mod2)
 
@@ -131,10 +130,10 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_perc'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover')
 )
-rf_arma_mod3 <- brm(lt ~ (1 | Name) + scale_et + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_mod3 <- brm(lt ~ (1 | Name) + scale_et + scale_Carryover + scale_pivot_perc + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
@@ -159,12 +158,12 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_perc'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
 )
-rf_arma_mod4 <- brm(lt ~ (1 | Name) + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_mod4 <- brm(lt ~ (1 | Name) + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_perc + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',

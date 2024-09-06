@@ -17,7 +17,7 @@ info <- readNWISsite(siteNumber)
 parameterCd <- "00060"
 
 # Import raw daily data
-rawdailydata <- readNWISdv(siteNumber, parameterCd, '2016-11-30', '2022-06-28')
+rawdailydata <- readNWISdv(siteNumber, parameterCd, '2016-11-30', '2024-06-28')
 rawdailydata$DiversionName <- 'Sand Run Gulch'
 
 # Export csv file
@@ -29,7 +29,7 @@ info <- readNWISsite(siteNumber)
 parameterCd <- "00060"
 
 # Import raw daily data
-rawdailydata <- readNWISdv(siteNumber, parameterCd, '2016-11-30', '2022-06-28')
+rawdailydata <- readNWISdv(siteNumber, parameterCd, '2016-11-30', '2024-06-28')
 rawdailydata$DiversionName <- 'East Hartley Gulch'
 
 # Export csv file
@@ -41,7 +41,7 @@ info <- readNWISsite(siteNumber)
 parameterCd <- "00060"
 
 # Import raw daily data
-rawdailydata <- readNWISdv(siteNumber, parameterCd, '1971-01-01', '2022-06-28')
+rawdailydata <- readNWISdv(siteNumber, parameterCd, '1971-01-01', '2024-06-28')
 rawdailydata$DiversionName <- 'Dixie Drain'
 
 # Export csv file
@@ -53,7 +53,7 @@ info <- readNWISsite(siteNumber)
 parameterCd <- "00060"
 
 # Import raw daily data
-rawdailydata <- readNWISdv(siteNumber, parameterCd, '2016-11-30', '2022-06-28')
+rawdailydata <- readNWISdv(siteNumber, parameterCd, '2016-11-30', '2024-06-28')
 rawdailydata$DiversionName <- 'Conway Gulch'
 
 # Export csv file
