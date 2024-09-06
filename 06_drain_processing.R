@@ -250,6 +250,9 @@ scale2sd <- function(x){
   (x - mean(x))/(sd(x)*2)
 }
 
+# Convert to pivot proportion to percentage by multiplying by 100
+data$pivot_perc <- data$pivot_prop * 100
+
 col_name <- c('ant_prcp',
               'irrig_prcp', 
               'irrig_temp', 
@@ -260,13 +263,14 @@ col_name <- c('ant_prcp',
               'largest_patch_index',
               'et', 
               'ubrb_prcp',
-              'pivot_prop',
+              'pivot_perc',
               'Carryover',
               'LP_inflows',
               'Max_Fill',
               'gw_wr',
               'sw_wr',
               'total_wr')
+
 
 for (i in col_name) {
   name <- colnames(data[i])
@@ -286,8 +290,8 @@ mean(data$scale_et)
 sd(data$scale_et)
 mean(data$scale_ubrb_prcp)
 sd(data$scale_ubrb_prcp)
-mean(data$scale_pivot_prop)
-sd(data$scale_pivot_prop)
+mean(data$scale_pivot_perc)
+sd(data$scale_pivot_perc)
 mean(data$scale_Carryover)
 sd(data$scale_Carryover)
 mean(data$scale_total_wr)
