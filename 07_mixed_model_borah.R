@@ -34,6 +34,9 @@ library(performance)
 rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv')
 rf$lt <- log(rf$Sum_AF)
 
+# Convert to pivot proportion to percentage by multiplying by 100
+rf$pivot_perc <- rf$pivot_prop * 100
+
 ## MODEL FIT ####
 mae <- function(model, data_compare){
   yhat <- posterior_predict(model)
@@ -101,7 +104,7 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_prop'),
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_perc'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
@@ -133,7 +136,7 @@ priors <- c(
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_et + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_prop + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_et + scale_gw_wr + scale_sw_wr + scale_Carryover + scale_pivot_perc + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
