@@ -27,8 +27,8 @@ unscale <- function(x, orig){
 }  
 
 ## Import data ####
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv')  
-arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0912.csv')  
+arma_ng <- readRDS('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup_mod2.Rdata')
 
 # Check out model summary 
 
@@ -809,7 +809,7 @@ ggplot(data=epreddraws,
   theme_bw() +
   theme(text = element_text(size = 18)) 
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/all_urb_marg.jpg', 
-       width = 6,
+       width = 4,
        height = 4,
        units = 'in')
 
@@ -832,8 +832,8 @@ mcmc_plot(arma_ng,
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_climate.jpg', 
-       width = 6,
-       height = 4,
+       width = 4.5,
+       height = 4.5,
        units = 'in')
 
 # All
@@ -867,8 +867,8 @@ mcmc_plot(arma_ng,
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
-       width = 7,
-       height = 6,
+       width = 4.5,
+       height = 4.5,
        units = 'in')
 
 #Urban 
@@ -925,7 +925,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 ggarrange(sw_wr, gw_wr, et, temp, precip, ubrb_prcp, Carryover, canal, pivot, urban, ncol=2, nrow = 5, labels = c('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/combined_marg.jpg', 
-       width = 8,
-       height = 8,
+       width = 4.5,
+       height = 4.5,
        units = 'in')
 

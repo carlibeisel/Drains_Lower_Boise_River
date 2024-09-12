@@ -31,11 +31,8 @@ library(performance)
 
 # Import the data 
 
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0912.csv')
 rf$lt <- log(rf$Sum_AF)
-
-# Convert to pivot proportion to percentage by multiplying by 100
-rf$pivot_perc <- rf$pivot_prop * 100
 
 ## MODEL FIT ####
 mae <- function(model, data_compare){
@@ -117,17 +114,17 @@ priors <- c(
 #                    cores = getOption('mc.cores', parallel::detectCores()))
 # #Model convergence
 # print('Model: ARMA and varying effects')
-# summary(lt.div.auto.011123)
+# summary(lt.div.auto)
 # 
 # ## Model Fit
 # print('MAE')
-# mae_lt(lt.div.auto.011123, rf$Sum_AF)
+# mae_lt(lt.div.auto, rf$Sum_AF)
 # 
 # print('LOO')
-# loo2 <- loo(lt.div.auto.011123, reloo = TRUE)
+# loo2 <- loo(lt.div.auto, reloo = TRUE)
 # loo2
 # 
-# saveRDS(lt.div.auto.011123, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma.RDS')
+# saveRDS(lt.div.auto, file = ''/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma.RDS')
 # saveRDS(loo2, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma.RDS')
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
@@ -147,7 +144,13 @@ summary(rf_arma_full)
 print('MAE')
 mae_lt(rf_arma_full, rf$Sum_AF)
 
-saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup.Rdata')
+saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup_mod2.Rdata')
+
+print("LOO")
+loo <- loo(rf_arma_full, reloo = TRUE)
+loo
+
+saveRDS(loo, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma_mod2.RDS')
 
 # Rsquared
 r2 <- r2_bayes(rf_arma_full)
