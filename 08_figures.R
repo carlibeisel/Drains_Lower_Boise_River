@@ -252,7 +252,7 @@ pivot <- ggplot(data=epreddraws,
   stat_lineribbon(
     .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
     color="black", size=2) + 
-  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Proporiton of Land Pivot Irrigated")  +
+  ylab("Drain Discharge (Acre-ft/yr)") + xlab("Percentage of Land Pivot Irrigated")  +
   theme_bw() +
   theme(text = element_text(size = 13)) + 
   scale_y_continuous(labels = scales::comma)+
@@ -861,7 +861,7 @@ mcmc_plot(arma_ng,
                               'Canal Flows',
                               'Reservoir Carryover',
                               'Urban Percentage',
-                              'Pivot Irrigation Proportion',
+                              'Pivot Irrigation Percentage',
                               'SW Water Rights',
                               'GW Water Rights')) +
   xlab('Relative Effect Size (log)') +
