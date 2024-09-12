@@ -40,7 +40,7 @@ source("http://peterhaschke.com/Code/multiplot.R")
 
 ## INPUT THE DATA ##
 ## -------------- ##
-data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0822.csv')
+data <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0912.csv')
 na_data <- data[is.na(data)] # Check for NA data in the file
 data <- data[-c(1)] # Remove python index value column
 
@@ -250,9 +250,6 @@ scale2sd <- function(x){
   (x - mean(x))/(sd(x)*2)
 }
 
-# Convert to pivot proportion to percentage by multiplying by 100
-data$pivot_perc <- data$pivot_prop * 100
-
 col_name <- c('ant_prcp',
               'irrig_prcp', 
               'irrig_temp', 
@@ -320,7 +317,7 @@ data <- dplyr :: left_join(data, sums, by = c('Name' = 'NewName',
                                               'Year' = 'divflows.Year'))
 data$scale_DivFlow <- scale2sd(data$DivFlow)
 
-write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0822.csv', row.names = FALSE)
+write.csv(data,'/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/mixed_model_input_0912.csv', row.names = FALSE)
 
 ## Check correlation between variables ##
 ## Don't want a correlation above 0.4 
@@ -335,7 +332,7 @@ avgs <- data %>%
 
 
 ## Perform Mann Kendall Test for each drain
-rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0822.csv')
+rf <- read.csv('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_input/model_input_0912.csv')
 
 #names <- data.frame(unique(rf$Name)) # old, replaced with below
 names <- unique(rf$Name)
@@ -385,20 +382,6 @@ change_plots <- function(dataframe, name){
 myplots <- list()
 values <- list()
 change <- list()
-
-# #old, replaced with below
-# for (i in change_names){
-#   p <- change_plots(subset(rf, Name == i), i)
-#   vals <- ggplot_build(p)
-#   vals <- vals$data[[2]]
-#   values[[i]] <- vals
-#   print(c(i, 'Percent Decrease:', ((max(vals$y) - min(vals$y))/max(vals$y))))
-#   print(c(i, '1987 Value:', (max(vals$y)), max(vals$y)-vals$ymin[1]))
-#   print(c(i, '2020 Value:', (min(vals$y)), min(vals$y)-vals$ymin[80]))
-#   change[[i]] <- max(vals$y)-min(vals$y)
-#   myplots[[i]] <- p
-# }
-# #
 
 for (i in change_names) {
   p <- change_plots(subset(rf, Name == i), i)
