@@ -95,12 +95,12 @@ priors <- c(
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_prcp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_irrig_temp'),
   set_prior('normal(0,5)', class = 'b', coef = 'scale_class1_urban'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_perc'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
-  set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
+  set_prior('normal(0,5)', class = 'b', coef = 'scale_DivFlow')
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_ubrb_prcp'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_pivot_perc'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_Carryover'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_sw_wr'),
+  #set_prior('normal(0,5)', class = 'b', coef = 'scale_gw_wr')
 )
 # 
 # # ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS ####
@@ -129,7 +129,7 @@ priors <- c(
 
  ## MODEL: AUTOREGRESSIVE MIX + DIV FLOWS NO GROUP, NO YEAR, order assumed ####
 
-rf_arma_full <- brm(lt ~ (1 | Name) + scale_sw_wr + scale_gw_wr + scale_et + scale_Carryover + scale_pivot_perc + scale_ubrb_prcp + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
+rf_arma_full <- brm(lt ~ (1 | Name) + scale_et + scale_class1_urban + scale_irrig_prcp + scale_irrig_temp + scale_DivFlow + arma( gr = Name),
                     data = rf,
                     iter = 4000,
                     family = 'normal',
@@ -144,13 +144,13 @@ summary(rf_arma_full)
 print('MAE')
 mae_lt(rf_arma_full, rf$Sum_AF)
 
-saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup_mod2.Rdata')
+saveRDS(rf_arma_full, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/arma_nogroup_mod1.Rdata')
 
 print("LOO")
 loo <- loo(rf_arma_full, reloo = TRUE)
 loo
 
-saveRDS(loo, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma_mod2.RDS')
+saveRDS(loo, file = '/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/loo_arma_mod1.RDS')
 
 # Rsquared
 r2 <- r2_bayes(rf_arma_full)
