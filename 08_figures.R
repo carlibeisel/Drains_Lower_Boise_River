@@ -93,7 +93,7 @@ epreddraws$unscale.urban <- unscale(epreddraws$scale_class1_urban, rf$class1_urb
 urban <- ggplot(data=epreddraws,
                 aes(x = unscale.urban, y = exp(.epred))) +
   stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    .width = c(.5, 0.95), alpha = 0.35, fill="#DF2935", 
     color="black", size=2) + 
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("Percent Urban") +
   theme_bw() +
@@ -196,7 +196,7 @@ epreddraws$unscale.temp <- (unscale(epreddraws$scale_irrig_temp,
 temp <- ggplot(data=epreddraws, 
                aes(x = unscale.temp, y = exp(.epred))) +
   stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    .width = c(.5, 0.95), alpha = 0.35, fill="#DF2935", 
     color="black", size=2) + 
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Max. Irrig. Temp. (F)")  +
   theme_bw() +
@@ -250,7 +250,7 @@ epreddraws$unscale.pivot <- (unscale(epreddraws$scale_pivot_perc,
 pivot <- ggplot(data=epreddraws, 
                 aes(x = unscale.pivot, y = exp(.epred))) +
   stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    .width = c(.5, 0.95), alpha = 0.35, fill="#DF2935", 
     color="black", size=2) + 
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("Percentage of Land Pivot Irrigated")  +
   theme_bw() +
@@ -353,7 +353,7 @@ epreddraws$unscale.sw_wr <- (unscale(epreddraws$scale_sw_wr,
 sw_wr <- ggplot(data=epreddraws,
                     aes(x = unscale.sw_wr, y = exp(.epred))) +
   stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c",
+    .width = c(.5, 0.95), alpha = 0.35, fill="grey",
     color="black", size=2) +
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("SW Water Rights")  +
   theme_bw() +
@@ -405,7 +405,7 @@ epreddraws$unscale.gw_wr <- (unscale(epreddraws$scale_gw_wr,
 gw_wr <- ggplot(data=epreddraws,
                 aes(x = unscale.gw_wr, y = exp(.epred))) +
   stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c",
+    .width = c(.5, 0.95), alpha = 0.35, fill="grey",
     color="black", size=2) +
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("GW Water Rights")  +
   theme_bw() +
@@ -512,7 +512,7 @@ epreddraws$unscale.precip <- (unscale(epreddraws$scale_irrig_prcp,
 precip <- ggplot(data=epreddraws, 
                  aes(x = unscale.precip, y = exp(.epred))) +
   stat_lineribbon(
-    .width = c(.5, 0.95), alpha = 0.35, fill="#00798c", 
+    .width = c(.5, 0.95), alpha = 0.35, fill="grey", 
     color="black", size=2) + 
   ylab("Drain Discharge (Acre-ft/yr)") + xlab("Avg. Irrigation Season Precip (in)")  +
   theme_bw() +
@@ -866,12 +866,12 @@ mcmc_plot(arma_ng,
                               'GW Water Rights')) +
   scale_fill_manual(values = c('Evapotranspiration' = '#00798c',
                                'Irrigation Season Precipitation' = 'grey',
-                               'Temperature' = '#edae49',
+                               'Temperature' = '#DF2935',
                                'UBRB Water Year Precipitation' = '#00798c',
                                'Canal Flows' = '#00798c',
                                'Reservoir Carryover' = '#00798c',
-                               'Urban Percentage' = '#edae49',
-                               'Pivot Irrigation Percentage' = '#edae49',
+                               'Urban Percentage' = '#DF2935',
+                               'Pivot Irrigation Percentage' = '#DF2935',
                                'SW Water Rights' = 'grey',
                                'GW Water Rights' = 'grey'))+
   xlab('Relative Effect Size (log)') +
