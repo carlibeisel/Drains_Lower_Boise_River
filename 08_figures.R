@@ -838,7 +838,7 @@ ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_outpu
 
 # All
 
-color_scheme_set('darkgray')
+color_scheme_set('blue')
 mcmc_plot(arma_ng,
           type = 'areas',
           variable = c('b_scale_et',
@@ -864,6 +864,16 @@ mcmc_plot(arma_ng,
                               'Pivot Irrigation Percentage',
                               'SW Water Rights',
                               'GW Water Rights')) +
+  scale_fill_manual(values = c('Evapotranspiration' = '#00798c',
+                               'Irrigation Season Precipitation' = 'grey',
+                               'Temperature' = '#edae49',
+                               'UBRB Water Year Precipitation' = '#00798c',
+                               'Canal Flows' = '#00798c',
+                               'Reservoir Carryover' = '#00798c',
+                               'Urban Percentage' = '#edae49',
+                               'Pivot Irrigation Percentage' = '#edae49',
+                               'SW Water Rights' = 'grey',
+                               'GW Water Rights' = 'grey'))+
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'))
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.png', 
