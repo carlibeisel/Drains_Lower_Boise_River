@@ -855,32 +855,32 @@ mcmc_plot(arma_ng,
           prob = 0.95) +
   theme_bw() +
   vline_0() +
-  scale_y_discrete(labels = c('Evapotranspiration',
-                              'Irrigation Season Precipitation',
-                              'Temperature',
-                              'UBRB Water Year Precip',
-                              'Canal Flows',
-                              'Reservoir Carryover',
-                              'Urban Percentage',
-                              'Pivot Irrigation Percentage')) +
+  scale_y_discrete(labels = c('ET',
+                              'Precip',
+                              'Temp',
+                              'UBRB',
+                              'Canal',
+                              'Res Carry',
+                              'Urban',
+                              'Pivot')) +
                              # 'SW Water Rights',
                             # 'GW Water Rights')) +
-  scale_fill_manual(values = c('Evapotranspiration' = '#00798c',
-                               'Irrigation Season Precipitation' = 'grey',
-                               'Temperature' = '#DF2935',
-                               'UBRB Water Year Precipitation' = '#00798c',
-                               'Canal Flows' = '#00798c',
-                               'Reservoir Carryover' = '#00798c',
-                               'Urban Percentage' = '#DF2935',
-                               'Pivot Irrigation Percentage' = '#DF2935')) +
+  scale_fill_manual(values = c('ET' = '#00798c',
+                               'Precip' = 'grey',
+                               'Temp' = '#DF2935',
+                               'UBRB' = '#00798c',
+                               'Canal' = '#00798c',
+                               'ResCarry' = '#00798c',
+                               'Urban' = '#DF2935',
+                               'Pivot' = '#DF2935')) +
                               # 'SW Water Rights' = 'grey',
                               # 'GW Water Rights' = 'grey'))+
   xlab('Relative Effect Size (log)') +
   theme(text = element_text(size=15, family = 'Arial'),
         plot.margin = unit(c(0.1, 0.1, 0.1, 0.1), "in"))  # Adjust margins to reduce spacing
 ggsave('/Users/dbeisel/Desktop/DATA/Bridget/Drains_Lower_Boise_River/model_output/Figures/postmass_all.svg', 
-       width = 4.5,
-       height = 4.5,
+       width = 8,
+       height = 8,
        units = 'in')
 
 #Urban 
